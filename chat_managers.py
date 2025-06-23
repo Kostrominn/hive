@@ -61,7 +61,7 @@ class ConflictManager:
         if existing:
             print(f"🚫 Конфликт слишком похож на уже активный: {existing.question}")
             return None
-        new_conflict = ConflictThread(topic, question, initiator, target, round_started)
+        new_conflict = ConflictThread(topic, question, round_started)
         new_conflict.add_to_side(initiator, "A")
         new_conflict.add_to_side(target, "B")
         self.conflicts.append(new_conflict)
