@@ -79,7 +79,7 @@ class ChatSimulatorUtils:
     async def generate_reply(self, person, context: str, history: List[Dict[str, str]]) -> str:
         context_snippet = person.context if isinstance(person.context, str) else ""
 
-        if self.conflict.is_in_active_conflict(person.name):
+        if self.conflict.is_in_active_conflict(person.name, self.round_num):
             for thread in self.conflict.conflicts:
                 if thread.is_active(self.round_num) and (person.name in thread.sides["A"] or person.name in thread.sides["B"]):
                     opponents = thread.get_opponents(person.name)
@@ -153,7 +153,7 @@ class ChatSimulatorUtils:
             return "(реплика пропущена как повтор предыдущих высказываний)"
 
         # сохраняем нормальную реплику 
-        tag = "🔥 (конфликт)" if self.conflict.is_in_active_conflict(person.name) else ""
+        tag = "🔥 (конфликт)" if self.conflict.is_in_active_conflict(person.name, self.round_num) else ""
         self.dialogue.append({"speaker": person.name, "text": f"{tag} {reply_text}".strip()})
         print(f"💬 [{person.name}] reply:", reply_text)
 
@@ -164,89 +164,89 @@ class ChatSimulatorUtils:
 
     #пока не применяем, все высказываются
     async def select_speakers(self, history: List[Dict[str, str]]) -> List:
-      selected = []
-      for person in self.characters:
-          name = person.name
+        selected = []
+        for person in self.characters:
+            name = person.name
 
-          was_mentioned = any(name in turn["text"] for turn in history[-3:])
-          note_type = self._extract_note_type(person)
-          in_conflict = self.conflict.is_in_active_conflict(name)
-          targeted = self.conflict.was_targeted_in_conflict(name)
-          has_spoken = self.turn_counts[name] > 0
+            was_mentioned = any(name in turn["text"] for turn in history[-3:])
+            note_type = self._extract_note_type(person)
+            in_conflict = self.conflict.is_in_active_conflict(name, self.round_num)
+            targeted = self.conflict.was_targeted_in_conflict(name, self.round_num)
+            has_spoken = self.turn_counts[name] > 0
 
-          recent = self.repetition.recent_texts[name][-5:]
-          previous = "\n".join(recent)
-          last_text = recent[-1] if recent else ""
-          repetition_score = 1.0
-          if last_text:
-              is_rep = await llm_check_repetition(previous, last_text)
-              repetition_score = 1.0 if is_rep else 0.0
+            recent = self.repetition.recent_texts[name][-5:]
+            previous = "\n".join(recent)
+            last_text = recent[-1] if recent else ""
+            repetition_score = 1.0
+            if last_text:
+                is_rep = await llm_check_repetition(previous, last_text)
+                repetition_score = 1.0 if is_rep else 0.0
 
-          self.participation.update_state(
-              name,
-              was_mentioned=was_mentioned,
-              note_type=note_type,
-              in_conflict=in_conflict,
-              conflict_targeted=targeted,
-              is_first_time=not has_spoken,
-              repetition_score=repetition_score
-          )
+            self.participation.update_state(
+                name,
+                was_mentioned=was_mentioned,
+                note_type=note_type,
+                in_conflict=in_conflict,
+                conflict_targeted=targeted,
+                is_first_time=not has_spoken,
+                repetition_score=repetition_score
+            )
 
-          score = self.participation.get_score(name)
-          self.participation_log[name][self.round_num] = score
+            score = self.participation.get_score(name)
+            self.participation_log[name][self.round_num] = score
 
-          spoke_last = self.participation.state[name]["spoke_last_round"]  # ✅ безопасно читаем
+            spoke_last = self.participation.state[name]["spoke_last_round"]  # ✅ безопасно читаем
 
-          #print(f"🧮 {name}: score={score:.2f} | spoke_last={spoke_last} | mentioned={was_mentioned} | note={note_type} | conflict={in_conflict} | targeted={targeted} | first_time={not has_spoken}")
-          #0.3 в оригинале
-          if score >= -1:
-              selected.append(person)
+            #print(f"🧮 {name}: score={score:.2f} | spoke_last={spoke_last} | mentioned={was_mentioned} | note={note_type} | conflict={in_conflict} | targeted={targeted} | first_time={not has_spoken}")
+            #0.3 в оригинале
+            if score >= -1:
+                selected.append(person)
 
-      #print(f"✅ Выбраны: {[p.name for p in selected]}")
-      return selected
+        #print(f"✅ Выбраны: {[p.name for p in selected]}")
+        return selected
 
 
     async def run_chat(self) -> List[Dict[str, str]]:
-      print("📍 Запрашиваем начальные позиции...")
-      for person in self.characters:
-          self.initial_positions[person.name] = await self.ask_position(person, phase="before")
+        print("📍 Запрашиваем начальные позиции...")
+        for person in self.characters:
+            self.initial_positions[person.name] = await self.ask_position(person, phase="before")
 
-      print("📣 Запускаем обсуждение...")
-      for round_num in range(self.rounds):
-          print(f"\n🔁 Раунд {round_num + 1} из {self.rounds}")
-          self.round_num = round_num
+        print("📣 Запускаем обсуждение...")
+        for round_num in range(self.rounds):
+            print(f"\n🔁 Раунд {round_num + 1} из {self.rounds}")
+            self.round_num = round_num
 
-          history = self.dialogue
-          chosen = await self.select_speakers(history)
-          if not chosen:
-              for name in self.participation.state:
-                  self.participation.update_state(name, spoke_last_round=False)
-              print("😶 Никто не захотел говорить. Пропускаем раунд.")
-              continue
-          #print(f"👥 Выбраны участники: {[p.name for p in chosen]}")
-          # 👥 Запоминаем, кто говорил в этом раунде
-          speakers_this_round = []
+            history = self.dialogue
+            chosen = await self.select_speakers(history)
+            if not chosen:
+                for name in self.participation.state:
+                    self.participation.update_state(name, spoke_last_round=False)
+                print("😶 Никто не захотел говорить. Пропускаем раунд.")
+                continue
+            #print(f"👥 Выбраны участники: {[p.name for p in chosen]}")
+            # 👥 Запоминаем, кто говорил в этом раунде
+            speakers_this_round = []
 
-          for person in chosen:
-              context = self.build_context(history)
-              reply = await self.generate_reply(person, context, history)
-              if reply:
-                  #self.dialogue.append({"speaker": person.name, "text": reply})
-                  self.turn_counts[person.name] += 1
-                  speakers_this_round.append(person.name)
-                  #print('speakers_this_round', speakers_this_round)
-          for name in self.participation.state:
-              self.participation.update_state(name, spoke_last_round=False)
-          for name in speakers_this_round:
-              self.participation.update_state(name, spoke_last_round=True)
-          self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
+            for person in chosen:
+                context = self.build_context(history)
+                reply = await self.generate_reply(person, context, history)
+                if reply:
+                    #self.dialogue.append({"speaker": person.name, "text": reply})
+                    self.turn_counts[person.name] += 1
+                    speakers_this_round.append(person.name)
+                    #print('speakers_this_round', speakers_this_round)
+            for name in self.participation.state:
+                self.participation.update_state(name, spoke_last_round=False)
+            for name in speakers_this_round:
+                self.participation.update_state(name, spoke_last_round=True)
+            self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
 
 
-      print("📍 Запрашиваем итоговые позиции...")
-      for person in self.characters:
-          self.final_positions[person.name] = await self.ask_position(person, phase="after")
+        print("📍 Запрашиваем итоговые позиции...")
+        for person in self.characters:
+            self.final_positions[person.name] = await self.ask_position(person, phase="after")
 
-      return self.dialogue
+        return self.dialogue
     
     
 # --- Асинхронный запуск симуляции чата ---

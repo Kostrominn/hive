@@ -32,21 +32,21 @@ class ConflictThread:
 class ConflictManager:
     def __init__(self):
         self.conflicts: List[ConflictThread] = []
-    
-    def is_in_active_conflict(self, name: str) -> bool:
+
+    def is_in_active_conflict(self, name: str, round_num: int) -> bool:
         return any(
             name in thread.sides["A"] or name in thread.sides["B"]
-            for thread in self.conflicts if thread.is_active(self.round_num)
+            for thread in self.conflicts if thread.is_active(round_num)
         )
 
-    def was_targeted_in_conflict(self, name: str) -> bool:
+    def was_targeted_in_conflict(self, name: str, round_num: int) -> bool:
         return any(
             name == thread.sides["B"] for thread in self.conflicts
-            if thread.is_active(self.round_num)
+            if thread.is_active(round_num)
         )
 
-    def must_speak_due_to_conflict(self, name: str) -> bool:
-        return self.is_in_active_conflict(name)
+    def must_speak_due_to_conflict(self, name: str, round_num: int) -> bool:
+        return self.is_in_active_conflict(name, round_num)
 
     async def find_similar_conflict(self, new_question: str, threshold: float = 0.8) -> Optional[ConflictThread]:
         for conflict in self.conflicts:
@@ -61,7 +61,7 @@ class ConflictManager:
         if existing:
             print(f"🚫 Конфликт слишком похож на уже активный: {existing.question}")
             return None
-        new_conflict = ConflictThread(topic, question, initiator, target, round_started)
+        new_conflict = ConflictThread(topic, question, round_started)
         new_conflict.add_to_side(initiator, "A")
         new_conflict.add_to_side(target, "B")
         self.conflicts.append(new_conflict)
