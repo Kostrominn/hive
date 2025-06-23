@@ -6,13 +6,16 @@ from agents import chat_agent
 from models import Runner
 
 class ConflictThread:
-    def __init__(self, topic: str, question: str, round_started: int):
+    def __init__(self, topic: str, question: str, initiator: str, target: str, round_started: int):
         self.topic = topic
         self.question = question
         self.sides = defaultdict(set)
         self.round_started = round_started
         self.resolved = False
         self.history = []
+        # Automatically add the initiating parties to their respective sides
+        self.add_to_side(initiator, "A")
+        self.add_to_side(target, "B")
 
     def add_to_side(self, person: str, side: str):
         if person not in self.sides[side]:
@@ -61,9 +64,8 @@ class ConflictManager:
         if existing:
             print(f"🚫 Конфликт слишком похож на уже активный: {existing.question}")
             return None
-        new_conflict = ConflictThread(topic, question, round_started)
-        new_conflict.add_to_side(initiator, "A")
-        new_conflict.add_to_side(target, "B")
+
+        new_conflict = ConflictThread(topic, question, initiator, target, round_started)
         self.conflicts.append(new_conflict)
         print(f"🔥 Новый конфликт: {topic} между {initiator} и {target}")
         return new_conflict
