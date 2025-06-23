@@ -53,7 +53,7 @@ def person_short_card(p: Person) -> str:
 
 def select_panelists_with_call_openai(topic: str, people: List[Person], number_of_people: int) -> List[Person]:
     """
-    Выбирает 5 человек для участия в дискуссии.
+    Выбирает количество людей, указанное в ``number_of_people``, для участия в дискуссии.
     """
     prompt = build_selection_prompt(topic, people, number_of_people)
     raw_json = call_openai([{"role": "user", "content": prompt}])
