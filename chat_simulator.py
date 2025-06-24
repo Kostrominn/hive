@@ -46,7 +46,6 @@ class ChatSimulatorUtils:
             return "desire"
         return None
 
-
     def build_context(self, history: List[Dict[str, str]]) -> str:
         context = f"📌 Тема обсуждения: {self.topic}\n\n"
         if history:
@@ -159,7 +158,6 @@ class ChatSimulatorUtils:
 
         self.repetition.add_text(person.name, reply_text)
         self.participation.update_state(person.name, repetition_score = 0.0 if is_rep else 1.0)
-        print(reply_text)
         return reply_text
 
     #пока не применяем, все высказываются
@@ -253,9 +251,19 @@ class ChatSimulatorUtils:
 async def run_simulation(topic, people, number_of_people_in_discussion, rounds):
     sim = ChatSimulatorUtils()
     sim.topic = topic
-    sim.characters = select_panelists_with_call_openai(topic, people, number_of_people_in_discussion)
+    selected = select_panelists_with_call_openai(topic, people, number_of_people_in_discussion)
+    sim.characters = [
+        p.model_copy(update={"name": f"Спикер {idx}"})
+        for idx, p in enumerate(selected, start=1)
+    ]
     sim.rounds = rounds
     dialogue = await sim.run_chat()
 
+    result = {
+        "initial_positions": sim.initial_positions,
+        "dialogue": dialogue,
+        "final_positions": sim.final_positions,
+    }
+    
     with open("dialogue.json", "w", encoding="utf-8") as f:
-        json.dump(dialogue, f, ensure_ascii=False, indent=2)
+        json.dump(result, f, ensure_ascii=False, indent=2)

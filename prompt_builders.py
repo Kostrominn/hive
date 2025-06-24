@@ -58,10 +58,12 @@ def select_panelists_with_call_openai(topic: str, people: List[Person], number_o
     prompt = build_selection_prompt(topic, people, number_of_people)
     raw_json = call_openai([{"role": "user", "content": prompt}])
     data = json.loads(raw_json)
-    print('ids:', data.get("selection", ""))
-
+    
     print("Причина выбора:", data.get("reason", ""))
-    ids = [s.strip() for s in data.get("selection", "").split(',') if s.strip()]
+    ids = data.get("selection", [])
+    print(ids)
+    if not isinstance(ids, list):
+        raise ValueError("selection must be a list")
     if len(ids) != number_of_people:
         raise ValueError(f"LLM вернуло {len(ids)} ID вместо {number_of_people}: {ids}")
 
@@ -124,6 +126,7 @@ def build_speech_prompt(person: Person, answer: str, own_lines: str, history_sin
     speech_profile = build_llm_prompt_for_speech_profile(person.speech_profile)
     prompt = build_speech_prompt_prompt(person, answer, own_lines, history_sinppet, speech_profile)
     prompt += f"\n🧠 Когнитивная рамка:\n{build_cognitive_frame_summary(person.cognitive_frame)}\n"
+    print(prompt)
     return prompt
 
 def build_selection_prompt(topic: str, people: List[Person], number_of_people: int) -> str:
