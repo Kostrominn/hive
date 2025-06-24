@@ -213,9 +213,12 @@ class ChatSimulatorUtils:
           others = [name for name in candidate_names if name != person.name]
           prompt = build_vote_prompt(person, others)
           res = await Runner.run(chat_agent, prompt)
-          vote = extract_text(res).split()[0] if extract_text(res) else ""
-          if vote == person.name or vote not in candidate_names:
-              vote = ""
+          raw_text = extract_text(res)
+          vote = ""
+          for candidate in others:
+              if candidate in raw_text:
+                  vote = candidate
+                  break
           round_result[person.name] = vote
       self.vote_history.append(round_result)
       print("🗳", round_result)

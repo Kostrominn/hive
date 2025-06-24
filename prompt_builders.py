@@ -138,4 +138,4 @@ def build_selection_prompt(topic: str, people: List[Person], number_of_people: i
 
 def build_vote_prompt(person: Person, candidates: List[str]) -> str:
     candidate_str = ", ".join(candidates)
-    return build_vote_prompt_prompt(candidate_str)
+    return build_vote_prompt_prompt(person.name, candidate_str)

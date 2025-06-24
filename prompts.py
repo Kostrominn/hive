@@ -302,8 +302,8 @@ def llm_check_similarity_prompt(first_reply, second_reply):
         f"Ответь **только числом от 0 до 1**."
     """
 
-def build_vote_prompt_prompt(candidates: str) -> str:
+def build_vote_prompt_prompt(voter: str, candidates: str) -> str:
     return f"""
-    Идёт голосование за президента среди участников: {candidates}.
+    {voter}, идёт голосование за президента среди участников: {candidates}.
     За кого ты отдаёшь голос? За себя голосовать нельзя. Ответь только именем выбранного человека.
     """
