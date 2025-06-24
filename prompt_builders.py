@@ -7,7 +7,7 @@ import re
 from prompts import build_cognitive_frame_summary_system_message, build_cognitive_frame_summary_few_shot
 from prompts import build_llm_prompt_for_speech_profile_prompt, build_speech_template_prompt
 from prompts import build_speech_prompt_prompt, build_full_prompt_prompt
-from prompts import analyse_dialogue_prompt, build_selection_prompt_prompt
+from prompts import analyse_dialogue_prompt, build_selection_prompt_prompt, build_vote_prompt_prompt
 
 
 def clean(name: str) -> str:
@@ -135,3 +135,7 @@ def build_selection_prompt(topic: str, people: List[Person], number_of_people: i
     body = "\n".join(body_lines)
 
     return f"{build_selection_prompt_prompt(number_of_people)}\n\n{header}\n{body}\n\nОтвет:"
+
+def build_vote_prompt(person: Person, candidates: List[str]) -> str:
+    candidate_str = ", ".join(candidates)
+    return build_vote_prompt_prompt(candidate_str)
