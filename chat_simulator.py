@@ -257,5 +257,13 @@ async def run_simulation(topic, people, number_of_people_in_discussion, rounds):
     sim.rounds = rounds
     dialogue = await sim.run_chat()
 
+    result = {
+        "initial_positions": sim.initial_positions,
+        "dialogue": dialogue,
+        "final_positions": sim.final_positions,
+    }
+
     with open("dialogue.json", "w", encoding="utf-8") as f:
-        json.dump(dialogue, f, ensure_ascii=False, indent=2)
+        json.dump(result, f, ensure_ascii=False, indent=2)
+
+    return result
