@@ -7,7 +7,7 @@ from llm_api import call_gemini
 from agents import chat_agent, chat_speech_agent
 from agent_functions import llm_check_repetition
 
-from prompt_builders import select_panelists_with_call_openai, build_full_prompt, build_speech_prompt
+from prompt_builders import select_panelists_with_call_openai, build_full_prompt, build_speech_prompt, build_vote_prompt
 
 from chat_managers import RepetitionTracker, ParticipationManager, ReflectionManager, ConflictManager
 
@@ -37,6 +37,7 @@ class ChatSimulatorUtils:
         self.turn_counts = defaultdict(int)
         self.initial_positions = {}
         self.final_positions = {}
+        self.vote_history = []
 
     def _extract_note_type(self, person) -> Optional[str]:
         notes = self.side_notes.get(person.name, [])
@@ -203,6 +204,20 @@ class ChatSimulatorUtils:
       #print(f"✅ Выбраны: {[p.name for p in selected]}")
       return selected
 
+    async def conduct_vote(self):
+      candidate_names = [p.name for p in self.characters]
+      round_result = {}
+      for person in self.characters:
+          others = [name for name in candidate_names if name != person.name]
+          prompt = build_vote_prompt(person, others)
+          res = await Runner.run(chat_agent, prompt)
+          vote = extract_text(res).split()[0] if extract_text(res) else ""
+          if vote == person.name or vote not in candidate_names:
+              vote = ""
+          round_result[person.name] = vote
+      self.vote_history.append(round_result)
+      print("🗳", round_result)
+
 
     async def run_chat(self) -> List[Dict[str, str]]:
       print("📍 Запрашиваем начальные позиции...")
@@ -238,6 +253,7 @@ class ChatSimulatorUtils:
           for name in speakers_this_round:
               self.participation.update_state(name, spoke_last_round=True)
           self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
+          await self.conduct_vote()
 
 
       print("📍 Запрашиваем итоговые позиции...")
@@ -266,4 +282,6 @@ async def run_simulation(topic, people, number_of_people_in_discussion, rounds):
     }
     
     with open("dialogue.json", "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=2)
+        json.dump(dialogue, f, ensure_ascii=False, indent=2)
+    with open("votes.json", "w", encoding="utf-8") as f:
+        json.dump(sim.vote_history, f, ensure_ascii=False, indent=2)
