@@ -3,7 +3,7 @@ from prompts import CHAT_AGENT_INSTRUCTIONS, CHAT_SPEECH_AGENT_INSTRUCTIONS
 
 chat_agent = Agent(
     name="ChatAgent",
-    description="Ты — голос человека из России. Отвечаешь на вопросы так, будто ты — он сам.",
+    description="Ты — голос человека из России. Все люди вокруг составляют город. Отвечаешь на вопросы так, будто ты — он сам. Твоя задача, чтобы в голосовании за президента за тебя проголосвало как можно больше людей. А за остальных как можно меньше людей.",
     instructions=CHAT_AGENT_INSTRUCTIONS)
 
 chat_speech_agent = Agent(

@@ -108,12 +108,12 @@ class ChatSimulatorUtils:
         parsed = safe_parse_json(raw_text)
         print('GPT answer', parsed.get("answer", "<нет ответа>"))
 
-        speech_prompt = build_speech_prompt(person, parsed.get("answer", "").strip(), own_lines, history_snippet)
-        speech_answer = await Runner.run(chat_speech_agent, speech_prompt, call_gemini)
-        print("Gemini semantic change", speech_answer.raw_output)
+        # speech_prompt = build_speech_prompt(person, parsed.get("answer", "").strip(), own_lines, history_snippet)
+        # speech_answer = await Runner.run(chat_speech_agent, speech_prompt, call_gemini)
+        # print("Gemini semantic change", speech_answer.raw_output)
     
         if parsed:
-            reply_text   = speech_answer.raw_output
+            reply_text   = parsed.get("answer")
             confidence   = parsed.get("confidence")
             conflict_with = (parsed.get("conflict_with") or "").strip()
             note         = parsed.get("note") or {}
@@ -146,11 +146,11 @@ class ChatSimulatorUtils:
 
         # проверка на повтор
         is_rep = await self.repetition.is_repetitive(person.name, reply_text)
-        if is_rep:
-            print(f"🌀 {person.name}: повтор реплики. Ответ не учитывается.")
-            self.dialogue.append({"speaker": person.name,
-                                  "text": f"(повтор — реплика не принята) {reply_text}"})
-            return "(реплика пропущена как повтор предыдущих высказываний)"
+        # if is_rep:
+        #     print(f"🌀 {person.name}: повтор реплики. Ответ не учитывается.")
+        #     self.dialogue.append({"speaker": person.name,
+        #                           "text": f"(повтор — реплика не принята) {reply_text}"})
+        #     return "(реплика пропущена как повтор предыдущих высказываний)"
 
         # сохраняем нормальную реплику 
         tag = "🔥 (конфликт)" if self.conflict.is_in_active_conflict(person.name) else ""
@@ -204,16 +204,21 @@ class ChatSimulatorUtils:
       #print(f"✅ Выбраны: {[p.name for p in selected]}")
       return selected
 
-    async def conduct_vote(self):
+    async def conduct_vote(self, history_snippet):
       candidate_names = [p.name for p in self.characters]
       round_result = {}
       for person in self.characters:
           others = [name for name in candidate_names if name != person.name]
-          prompt = build_vote_prompt(person, others)
+          prompt = build_vote_prompt(person, others, history_snippet)
+          print(prompt)
           res = await Runner.run(chat_agent, prompt)
-          vote = extract_text(res).split()[0] if extract_text(res) else ""
-          if vote == person.name or vote not in candidate_names:
-              vote = ""
+          print(res)
+          try:
+            data = json.loads(res.raw_output)
+          except json.JSONDecodeError:
+            # Если это просто ответ типа "Спикер 9", оборачиваем
+            data = {"answer": res.raw_output.strip()}
+          vote = data["answer"]
           round_result[person.name] = vote
       self.vote_history.append(round_result)
       print("🗳", round_result)
@@ -221,13 +226,14 @@ class ChatSimulatorUtils:
 
     async def run_chat(self) -> List[Dict[str, str]]:
       print("📍 Запрашиваем начальные позиции...")
-      for person in self.characters:
-          self.initial_positions[person.name] = await self.ask_position(person, phase="before")
+    #   for person in self.characters:
+    #       self.initial_positions[person.name] = await self.ask_position(person, phase="before")
 
       print("📣 Запускаем обсуждение...")
       for round_num in range(self.rounds):
           print(f"\n🔁 Раунд {round_num + 1} из {self.rounds}")
           self.round_num = round_num
+          self.conflict.current_round = round_num
 
           history = self.dialogue
           chosen = await self.select_speakers(history)
@@ -253,7 +259,7 @@ class ChatSimulatorUtils:
           for name in speakers_this_round:
               self.participation.update_state(name, spoke_last_round=True)
           self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
-          await self.conduct_vote()
+          await self.conduct_vote(history)
 
 
       print("📍 Запрашиваем итоговые позиции...")

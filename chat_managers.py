@@ -35,17 +35,19 @@ class ConflictThread:
 class ConflictManager:
     def __init__(self):
         self.conflicts: List[ConflictThread] = []
+        self.current_round: int = 0
     
     def is_in_active_conflict(self, name: str) -> bool:
         return any(
             name in thread.sides["A"] or name in thread.sides["B"]
-            for thread in self.conflicts if thread.is_active(self.round_num)
+            for thread in self.conflicts if thread.is_active(self.current_round)
         )
 
     def was_targeted_in_conflict(self, name: str) -> bool:
         return any(
-            name == thread.sides["B"] for thread in self.conflicts
-            if thread.is_active(self.round_num)
+            name in thread.sides["B"]
+            for thread in self.conflicts
+            if thread.is_active(self.current_round)
         )
 
     def must_speak_due_to_conflict(self, name: str) -> bool:

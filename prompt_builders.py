@@ -139,6 +139,6 @@ def build_selection_prompt(topic: str, people: List[Person], number_of_people: i
 
     return f"{build_selection_prompt_prompt(number_of_people)}\n\n{header}\n{body}\n\nОтвет:"
 
-def build_vote_prompt(person: Person, candidates: List[str]) -> str:
+def build_vote_prompt(person: Person, candidates: List[str], history_snippet: str) -> str:
     candidate_str = ", ".join(candidates)
-    return build_vote_prompt_prompt(candidate_str)
+    return build_vote_prompt_prompt(person, candidate_str, history_snippet)

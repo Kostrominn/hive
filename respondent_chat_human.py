@@ -6,8 +6,8 @@ path = "./profiles"
 
 def main():
     people = load_people(path, limit=50)
-    topic = "Расскажите, как вы относитесь к идее удалённой работы: подходит ли это вам, людям в вашем окружении, что вы в этом видите — плюсы, минусы??"
-    number_of_people_in_discussion = 5
+    topic = "Вы находитесь в одном городе и среди вас выбирают президента. Президент определяется голосованием. Вы хотите им стать!"
+    number_of_people_in_discussion = 30
     number_of_rounds_in_discussion = 5
     try:
         asyncio.run(run_simulation(topic, people, number_of_people_in_discussion, number_of_rounds_in_discussion))

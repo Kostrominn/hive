@@ -1,10 +1,6 @@
 import os
 import openai
 import requests
-import json
-import logging
-import textwrap
-import re
 from openai import OpenAI, AsyncOpenAI
 from typing import List, Dict
 
@@ -25,7 +21,7 @@ def call_openai(messages, model="gpt-4.1", temperature=0.5, presence_penalty=0.6
             messages=messages,
             temperature=temperature,
             presence_penalty=presence_penalty,
-            timeout=30,
+            timeout=120,
         )
         return response.choices[0].message.content
     except openai.OpenAIError as e:
@@ -46,7 +42,7 @@ async def call_openai_async(messages, model="gpt-4.1", temperature=0.3):
 
 # Gemini call
 def call_gemini(messages: List[Dict[str, str]], need_json_decode=False, temperature: float = 0.3):
-    URL_GEMINI = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+    URL_GEMINI = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
     HEADERS = {
         "Content-Type": "application/json",
     }
@@ -81,6 +77,8 @@ def call_gemini(messages: List[Dict[str, str]], need_json_decode=False, temperat
         data["generationConfig"]["response_mime_type"] = "application/json"
     response = requests.post(url=URL_GEMINI, headers=HEADERS, json=data, proxies=PROXIES)
     response = response.json()
-    response = {"choices": [{"message": {"content": response["candidates"][0]["content"]["parts"][0]["text"]}}]}
-    print('in Gemini response', response["choices"][0]["message"]["content"])
+    try:
+        response = {"choices": [{"message": {"content": response["candidates"][0]["content"]["parts"][0]["text"]}}]}
+    except:
+        return  gemini_messages
     return response["choices"][0]["message"]["content"]
