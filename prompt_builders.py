@@ -6,7 +6,7 @@ import re
 
 from prompts import build_cognitive_frame_summary_system_message, build_cognitive_frame_summary_few_shot
 from prompts import build_llm_prompt_for_speech_profile_prompt, build_speech_template_prompt
-from prompts import build_speech_prompt_prompt, build_full_prompt_prompt
+from prompts import build_speech_prompt_prompt, build_full_prompt_prompt, build_president_prompt_prompt
 from prompts import analyse_dialogue_prompt, build_selection_prompt_prompt, build_vote_prompt_prompt
 
 
@@ -122,6 +122,27 @@ def build_full_prompt(person: Person, context_snippet: str, history_snippet: str
     
     return prompt
 
+
+def build_president_full_prompt(person: Person, context: str, history_snippet: str, conflict_notice: str, topic: str, own_lines: str) -> str:
+    reactions, new_pt = analyse_dialogue(
+        history_snippet=history_snippet, me=person.name
+    )
+    reactions_block = render_reactions(reactions)
+    new_point_line  = new_pt if new_pt else "Придумай свежий аспект сам."
+    prompt = build_president_prompt_prompt(
+    person,
+    context,
+    conflict_notice,
+    topic,
+    own_lines,
+    reactions_block,
+    new_point_line
+)
+    prompt += f"\n🧠 Когнитивная рамка:\n{build_cognitive_frame_summary(person.cognitive_frame)}\n"
+    prompt += f"\nВ качестве структуры фразы, используй шаблон {build_speech_template(person)}, НО если все твои реплики из одного и того же шаблона, выбери другой шаблон.\n"
+    
+    return prompt
+
 def build_speech_prompt(person: Person, answer: str, own_lines: str, history_sinppet: str) -> str:
     speech_profile = build_llm_prompt_for_speech_profile(person.speech_profile)
     prompt = build_speech_prompt_prompt(person, answer, own_lines, history_sinppet, speech_profile)
@@ -139,6 +160,6 @@ def build_selection_prompt(topic: str, people: List[Person], number_of_people: i
 
     return f"{build_selection_prompt_prompt(number_of_people)}\n\n{header}\n{body}\n\nОтвет:"
 
-def build_vote_prompt(person: Person, candidates: List[str], history_snippet: str) -> str:
+def build_vote_prompt(person: Person, candidates: List[str], history_snippet: str, context) -> str:
     candidate_str = ", ".join(candidates)
-    return build_vote_prompt_prompt(person, candidate_str, history_snippet)
+    return build_vote_prompt_prompt(person, candidate_str, history_snippet, context)

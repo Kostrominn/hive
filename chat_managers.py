@@ -5,6 +5,27 @@ from prompt_builders import build_full_prompt
 from agents import chat_agent
 from models import Runner
 
+import logging
+# Подавляем шум от httpx/openai
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("openai").setLevel(logging.WARNING)
+
+# Создаём отдельный логгер для конфликтов
+conflict_logger = logging.getLogger("conflict")
+conflict_logger.setLevel(logging.INFO)
+
+# Настраиваем обработчик файла
+conflict_handler = logging.FileHandler("conflicts.log", encoding="utf-8")
+conflict_handler.setFormatter(logging.Formatter(
+    '[%(asctime)s] %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+))
+
+conflict_logger.addHandler(conflict_handler)
+conflict_logger.propagate = False 
+
+
 class ConflictThread:
     def __init__(self, topic: str, question: str, initiator: str, target: str, round_started: int):
         self.topic = topic
@@ -64,29 +85,40 @@ class ConflictManager:
     async def create_conflict(self, topic: str, question: str, initiator: str, target: str, round_started: int) -> Optional[ConflictThread]:
         existing = await self.find_similar_conflict(question)
         if existing:
-            print(f"🚫 Конфликт слишком похож на уже активный: {existing.question}")
+            logging.info(f"🚫 Конфликт слишком похож на уже активный: {existing.question}")
             return None
 
         new_conflict = ConflictThread(topic, question, initiator, target, round_started)
         self.conflicts.append(new_conflict)
-        print(f"🔥 Новый конфликт: {topic} между {initiator} и {target}")
+        logging.info(f"🔥 Новый конфликт: {question} между {initiator} и {target}")
         return new_conflict
 
     def check_for_resolved_conflicts(self, round_num: int, reset_callback):
         for conflict in self.conflicts:
             if not conflict.resolved and not conflict.is_active(round_num):
                 conflict.resolved = True
-                print(f"🧯 Конфликт завершён: {conflict.topic} между {list(conflict.sides['A'])} и {list(conflict.sides['B'])}")
+                logging.info(f"🧯 Конфликт завершён: {conflict.topic} между {list(conflict.sides['A'])} и {list(conflict.sides['B'])}")
                 for name in conflict.sides["A"] | conflict.sides["B"]:
                     reset_callback(name)
 
     def get_active_conflict_between(self, person1: str, person2: str, round_num: int) -> Optional[ConflictThread]:
+        logging.debug(f"🔍 Поиск конфликта между {person1} и {person2} в раунде {round_num}...")
+
         for conflict in self.conflicts:
             if conflict.is_active(round_num):
                 side_A = conflict.sides["A"]
                 side_B = conflict.sides["B"]
+                logging.debug(f"🔎 Активный конфликт найден: стороны A={side_A}, B={side_B}")
+
                 if (person1 in side_A and person2 in side_B) or (person1 in side_B and person2 in side_A):
+                    logging.info(f"⚔️ Конфликт между {person1} и {person2} подтверждён.")
                     return conflict
+                else:
+                    logging.debug(f"⛔️ {person1} и {person2} не на противоположных сторонах.")
+            else:
+                logging.debug("💤 Конфликт неактивен в этом раунде.")
+
+        logging.info(f"✅ Между {person1} и {person2} активный конфликт **не найден** в раунде {round_num}.")
         return None
     
 
