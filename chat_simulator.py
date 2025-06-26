@@ -348,10 +348,26 @@ class ChatSimulatorUtils:
           history_snippet = "\n".join(f"{t['speaker']}: {t['text']}" for t in self.dialogue[-10:])
           await self.conduct_vote(history_snippet, round_num, context)
 
+          # Collect reflections from all participants after each round
+          self.reflection.dialogue = self.dialogue
+          self.reflection.topic = self.topic
+          for p in self.characters:
+              answer = await self.reflection.ask_reflection(p)
+              self.reflection.log[p.name].append({
+                  "round": self.round_num,
+                  "text": answer,
+              })
+
 
       print("📍 Запрашиваем итоговые позиции...")
       for person in self.characters:
           self.final_positions[person.name] = await self.ask_position(person, phase="after")
+
+      # Output reflection log at the end of the chat
+      print("📔 Итоги рефлексии:")
+      for name, entries in self.reflection.log.items():
+          for entry in entries:
+              print(f"{name} после раунда {entry['round']}: {entry['text']}")
 
       return self.dialogue
     
