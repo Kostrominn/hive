@@ -85,40 +85,40 @@ class ConflictManager:
     async def create_conflict(self, topic: str, question: str, initiator: str, target: str, round_started: int) -> Optional[ConflictThread]:
         existing = await self.find_similar_conflict(question)
         if existing:
-            logging.info(f"🚫 Конфликт слишком похож на уже активный: {existing.question}")
+            conflict_logger.info(f"🚫 Конфликт слишком похож на уже активный: {existing.question}")
             return None
 
         new_conflict = ConflictThread(topic, question, initiator, target, round_started)
         self.conflicts.append(new_conflict)
-        logging.info(f"🔥 Новый конфликт: {question} между {initiator} и {target}")
+        conflict_logger.info(f"🔥 Новый конфликт: {question} между {initiator} и {target}")
         return new_conflict
 
     def check_for_resolved_conflicts(self, round_num: int, reset_callback):
         for conflict in self.conflicts:
             if not conflict.resolved and not conflict.is_active(round_num):
                 conflict.resolved = True
-                logging.info(f"🧯 Конфликт завершён: {conflict.topic} между {list(conflict.sides['A'])} и {list(conflict.sides['B'])}")
+                conflict_logger.info(f"🧯 Конфликт завершён: {conflict.topic} между {list(conflict.sides['A'])} и {list(conflict.sides['B'])}")
                 for name in conflict.sides["A"] | conflict.sides["B"]:
                     reset_callback(name)
 
     def get_active_conflict_between(self, person1: str, person2: str, round_num: int) -> Optional[ConflictThread]:
-        logging.debug(f"🔍 Поиск конфликта между {person1} и {person2} в раунде {round_num}...")
+        conflict_logger.debug(f"🔍 Поиск конфликта между {person1} и {person2} в раунде {round_num}...")
 
         for conflict in self.conflicts:
             if conflict.is_active(round_num):
                 side_A = conflict.sides["A"]
                 side_B = conflict.sides["B"]
-                logging.debug(f"🔎 Активный конфликт найден: стороны A={side_A}, B={side_B}")
+                conflict_logger.debug(f"🔎 Активный конфликт найден: стороны A={side_A}, B={side_B}")
 
                 if (person1 in side_A and person2 in side_B) or (person1 in side_B and person2 in side_A):
-                    logging.info(f"⚔️ Конфликт между {person1} и {person2} подтверждён.")
+                    conflict_logger.info(f"⚔️ Конфликт между {person1} и {person2} подтверждён.")
                     return conflict
                 else:
-                    logging.debug(f"⛔️ {person1} и {person2} не на противоположных сторонах.")
+                    conflict_logger.debug(f"⛔️ {person1} и {person2} не на противоположных сторонах.")
             else:
-                logging.debug("💤 Конфликт неактивен в этом раунде.")
+                conflict_logger.debug("💤 Конфликт неактивен в этом раунде.")
 
-        logging.info(f"✅ Между {person1} и {person2} активный конфликт **не найден** в раунде {round_num}.")
+        conflict_logger.info(f"✅ Между {person1} и {person2} активный конфликт **не найден** в раунде {round_num}.")
         return None
     
 
@@ -197,5 +197,5 @@ class ReflectionManager:
             f"Ответь коротко и по существу."
         )
         result = await Runner.run(chat_agent, prompt)
-        print(f"🔎 REFLECTION [{person.name}]: {result.final_output}")
+        logging.info(f"🔎 REFLECTION [{person.name}]: {result.final_output}")
         return result.final_output.strip()

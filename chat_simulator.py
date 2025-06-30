@@ -13,6 +13,14 @@ from prompt_builders import select_panelists_with_call_openai, build_full_prompt
 
 from chat_managers import RepetitionTracker, ParticipationManager, ReflectionManager, ConflictManager
 
+from prompt_builders import (
+    select_panelists_with_call_openai,
+    build_full_prompt,
+    build_vote_prompt,
+    build_president_full_prompt,
+    build_distribution_prompt,
+)
+
 import logging
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
@@ -20,13 +28,27 @@ logging.getLogger("openai").setLevel(logging.WARNING)
 logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
+    datefmt='%m-%d %H:%M',
     handlers=[
         logging.FileHandler("simulation.log", encoding="utf-8"),
         logging.StreamHandler()  # чтобы осталась и печать в консоль
     ],
     force=True
 )
+
+# Создаём отдельный логгер для конфликтов
+vote_logger = logging.getLogger("vote")
+vote_logger.setLevel(logging.INFO)
+
+# Настраиваем обработчик файла
+vote_handler = logging.FileHandler("votes.log", encoding="utf-8")
+vote_handler.setFormatter(logging.Formatter(
+    '[%(asctime)s] %(levelname)s - %(message)s',
+    datefmt='%m-%d %H:%M'
+))
+
+vote_logger.addHandler(vote_handler)
+vote_logger.propagate = False 
 
 def extract_text(res) -> str:
     if res is None:
@@ -55,6 +77,9 @@ class ChatSimulatorUtils:
         self.initial_positions = {}
         self.final_positions = {}
         self.vote_history = []
+        self.money_pool = 1000
+        self.final_distribution = {}
+        self.allocation_promises = {}
 
     def _extract_note_type(self, person) -> Optional[str]:
         notes = self.side_notes.get(person.name, [])
@@ -90,6 +115,7 @@ class ChatSimulatorUtils:
                     if reason:
                         reasons[candidate].append(reason)
                     reason_str = f' — "{reason}"' if reason else ""
+                    
                     individual_votes.append(f"{voter} → {candidate}{reason_str}")
 
             if individual_votes:
@@ -122,6 +148,11 @@ class ChatSimulatorUtils:
         if self.vote_history:
             context_vote, _ = self.vote_history_context()
         context += context_vote
+        if self.allocation_promises:
+            context += "\n\n💰 Обещания кандидатов:\n"
+            for speaker, alloc in self.allocation_promises.items():
+                pairs = "; ".join(f"{k}:{v}" for k, v in alloc.items())
+                context += f"{speaker}: {pairs}\n"
         return context
 
     def reset_conflict_state(self, name: str):
@@ -187,16 +218,21 @@ class ChatSimulatorUtils:
             confidence   = parsed.get("confidence")
             conflict_with = (parsed.get("conflict_with") or "").strip()
             note         = parsed.get("note") or {}
+            allocation   = parsed.get("allocation") if isinstance(parsed.get("allocation"), dict) else None
         else:
             reply_text   = raw_text
             conflict_with = ""
             note         = {}
+            allocation   = None
 
         # побочные заметки
         if isinstance(note, dict):
             content = note.get("content", "").strip()
             if content:
                 self.side_notes[person.name].append(content)
+        
+        if allocation:
+            self.allocation_promises[person.name] = allocation
 
         # конфликты 
         if conflict_with:
@@ -226,6 +262,7 @@ class ChatSimulatorUtils:
         tag = "🔥 (конфликт)" if self.conflict.is_in_active_conflict(person.name) else ""
         self.dialogue.append({"speaker": person.name, "text": f"{tag} {reply_text}".strip()})
         logging.info(f"💬 [{person.name}] reply: {reply_text}")
+        logging.info(f"💵 💵 💵[{person.name}] give money to: {allocation}")
 
         self.repetition.add_text(person.name, reply_text)
         self.participation.update_state(person.name, repetition_score = 0.0 if is_rep else 1.0)
@@ -291,6 +328,7 @@ class ChatSimulatorUtils:
                     reason = note.get("content", "").strip()
                 else:
                     reason = str(note).strip()
+                
 
           except json.JSONDecodeError as e:
                 logging.warning(f"⚠️ Ошибка JSON: {e} | raw = {res.raw_output}")
@@ -303,11 +341,51 @@ class ChatSimulatorUtils:
           entry = {"candidate": candidate}
           if reason:
               entry["reason"] = reason
+
           round_result[person.name] = entry
       self.vote_history.append({"round": round_num, "votes": round_result})
       _, block_context = self.vote_history_context()
-      logging.info(f"Результаты голосования {block_context}")
+      vote_logger.info(f"Результаты голосования {block_context}")
       print("🗳", round_result)
+    
+    def get_winner(self) -> Optional[str]:
+      if not self.vote_history:
+          return None
+      last_votes = self.vote_history[-1].get("votes", {})
+      counts = defaultdict(int)
+      for info in last_votes.values():
+          if isinstance(info, dict):
+              cand = info.get("candidate")
+              if cand:
+                  counts[cand] += 1
+      if not counts:
+          return None
+      max_votes = max(counts.values())
+      winners = [c for c, v in counts.items() if v == max_votes]
+      return winners[0]
+
+    async def ask_distribution(self, president_name: str):
+      pres = next((p for p in self.characters if p.name == president_name), None)
+      logging.info(f"🏆 Президент: {pres.name if pres else 'не найден'}")
+      if not pres:
+          return
+      context_vote, _ = self.vote_history_context()
+      alloc_context = ""
+      if self.allocation_promises:
+          alloc_context += "\n\n💰 Обещания кандидатов:\n"
+          for speaker, alloc in self.allocation_promises.items():
+              pairs = "; ".join(f"{k}:{v}" for k, v in alloc.items())
+              alloc_context += f"{speaker}: {pairs}\n"
+      prompt = build_distribution_prompt(pres, self.money_pool, context_vote + alloc_context)
+      res = await Runner.run(chat_agent, prompt)
+      logging.info(f"💰 Распределение от {pres.name}: {res.raw_output}")
+      raw = extract_text(res)
+      parsed = safe_parse_json(raw)
+      if parsed and isinstance(parsed.get("distribution"), dict):
+          self.final_distribution = parsed
+      else:
+          self.final_distribution = {"raw": raw}
+
 
 
     async def run_chat(self) -> List[Dict[str, str]]:
@@ -346,13 +424,26 @@ class ChatSimulatorUtils:
               self.participation.update_state(name, spoke_last_round=True)
           self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
           history_snippet = "\n".join(f"{t['speaker']}: {t['text']}" for t in self.dialogue[-10:])
+          
+        #   self.reflection.dialogue = self.dialogue
+        #   self.reflection.topic = self.topic
+        #   for p in self.characters:
+        #       answer = await self.reflection.ask_reflection(p)
+        #       self.reflection.log[p.name].append({
+        #           "round": self.round_num,
+        #           "text": answer,
+        #       })
+
           await self.conduct_vote(history_snippet, round_num, context)
-
-
+          
       print("📍 Запрашиваем итоговые позиции...")
       for person in self.characters:
           self.final_positions[person.name] = await self.ask_position(person, phase="after")
-
+      
+      winner = self.get_winner()
+      logging.info(f"🏆 Победитель: {winner}")
+      if winner:
+          await self.ask_distribution(winner)
       return self.dialogue
     
     
@@ -383,3 +474,7 @@ async def run_simulation(topic, people, number_of_people_in_discussion, rounds):
         json.dump(dialogue, f, ensure_ascii=False, indent=2)
     with open("votes.json", "w", encoding="utf-8") as f:
         json.dump(sim.vote_history, f, ensure_ascii=False, indent=2)
+    
+    if sim.final_distribution:
+        with open("money_distribution.json", "w", encoding="utf-8") as f:
+            json.dump({"president": sim.get_winner(), "distribution": sim.final_distribution}, f, ensure_ascii=False, indent=2)
