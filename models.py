@@ -5,6 +5,18 @@ from typing import get_origin, get_args
 import json
 import inspect
 
+class HistoryEvent(BaseModel):
+    """Событие из истории человека"""
+    id: int
+    life_stage: str
+    theme: str
+    summary: str
+    quote: Optional[str] = None
+    emotion: Optional[str] = None
+    values: Optional[str] = None
+    sociological_note: Optional[str] = None
+    type: Optional[str] = None
+
 class Agent:
     def __init__(
         self,
@@ -66,6 +78,8 @@ class Person(BaseModel):
     interpretation_biases: Optional[Dict[str, Any]] = None
     meta_self_view: Optional[Dict[str, Any]] = None
     speech_profile: Optional[Dict[str, Any]] = None
+
+    full_history: Optional[List[HistoryEvent]] = None
 
 class Runner:
     @staticmethod

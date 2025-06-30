@@ -9,6 +9,7 @@ from prompts import build_llm_prompt_for_speech_profile_prompt, build_speech_tem
 from prompts import build_speech_prompt_prompt, build_full_prompt_prompt, build_president_prompt_prompt
 from prompts import analyse_dialogue_prompt, build_selection_prompt_prompt, build_vote_prompt_prompt, build_distribution_prompt_prompt
 
+from history_analyzer import find_relevant_history_llm, format_selected_history
 
 def clean(name: str) -> str:
     name = name.strip()
@@ -166,3 +167,40 @@ def build_vote_prompt(person: Person, candidates: List[str], history_snippet: st
 
 def build_distribution_prompt(person: Person, money: int, context: str) -> str:
     return build_distribution_prompt_prompt(person, money, context)
+
+async def build_full_prompt_with_history(person: Person, context_snippet: str, history_snippet: str, 
+                                       conflict_notice: str, topic: str, own_lines: str, 
+                                       recent_messages: List[str]) -> str:
+    
+    # RAG по истории через LLM
+    relevant_events = await find_relevant_history_llm(person, topic, recent_messages, max_events=25)
+    
+    # Существующий промпт + история
+    base_prompt = build_full_prompt_prompt(person, context_snippet, conflict_notice, topic, own_lines, 
+                                         "", "Придумай свежий аспект сам.")
+    
+    # Добавляем релевантную историю
+    if relevant_events:
+        history_context = format_selected_history(relevant_events)
+        base_prompt += f"\n{history_context}\n"
+        base_prompt += "💡 Используй эти воспоминания для обоснования своей позиции, если они подходят к теме.\n"
+    
+    return base_prompt
+
+async def build_president_full_prompt_with_history(person: Person, context: str, conflict_notice: str, 
+                                                 topic: str, own_lines: str, recent_messages: List[str]) -> str:
+    
+    # RAG по истории
+    relevant_events = await find_relevant_history_llm(person, topic, recent_messages, max_events=10)
+
+    # Существующий промпт
+    base_prompt = build_president_prompt_prompt(person, context, conflict_notice, topic, own_lines,
+                                              "", "Придумай свежий аспект сам.")
+    
+    # Добавляем историю
+    if relevant_events:
+        history_context = format_selected_history(relevant_events)
+        base_prompt += f"\n{history_context}\n"
+        base_prompt += "🎯 Можешь опираться на данные воспоминания в аргументации.\n"
+    
+    return base_prompt

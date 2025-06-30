@@ -9,7 +9,7 @@ from llm_api import call_gemini
 from agents import chat_agent, chat_speech_agent
 from agent_functions import llm_check_repetition
 
-from prompt_builders import select_panelists_with_call_openai, build_full_prompt, build_vote_prompt, build_president_full_prompt
+from prompt_builders import select_panelists_with_call_openai, build_full_prompt, build_vote_prompt, build_president_full_prompt_with_history
 
 from chat_managers import RepetitionTracker, ParticipationManager, ReflectionManager, ConflictManager
 
@@ -141,7 +141,7 @@ class ChatSimulatorUtils:
     def build_context(self, history: List[Dict[str, str]], round_num) -> str:
         context = f"📌 Тема обсуждения: {self.topic}\n\n"
         if history:
-            context += "🔨️ Последние реплики:\n"
+            context += "🔨️ Последние реплики. Используй для реакции. Строй СВОЮ точку зрения на ситуацию.\n"
             context += "\n".join([f"{turn['speaker']}: {turn['text']}" for turn in history[-1000:]])
         
         context_vote = ""
@@ -203,7 +203,12 @@ class ChatSimulatorUtils:
         own_tail = [t["text"] for t in self.dialogue if t["speaker"] == person.name]
         own_lines = "\n".join(f"• {txt}" for txt in own_tail[-3:])
 
-        prompt = build_president_full_prompt(person, context, history_snippet, conflict_notice, self.topic, own_lines)
+        #prompt = build_president_full_prompt(person, context, history_snippet, conflict_notice, self.topic, own_lines)
+        
+        recent_messages = [t["text"] for t in self.dialogue[-30:]]
+        prompt = await build_president_full_prompt_with_history(person, context, conflict_notice, self.topic, own_lines, recent_messages)
+        print('full prompt with history', prompt)
+        
         result = await Runner.run(chat_agent, prompt)
         raw_text = extract_text(result)
         parsed = safe_parse_json(raw_text)
