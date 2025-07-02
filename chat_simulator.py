@@ -95,6 +95,16 @@ class ChatSimulatorUtils:
     ]
         self.current_scenario_index = 0
         self.current_scenario = None
+        self.scenario_change_interval = 2
+        self.months_per_round = 3
+        self.scenario_change_message = ""
+        # Общие нужды города, на которые можно тратить средства
+        self.resources_pool = [
+            "food",
+            "medicine",
+            "infrastructure",
+            "security",
+        ]
 
     def _extract_note_type(self, person) -> Optional[str]:
         notes = self.side_notes.get(person.name, [])
@@ -154,7 +164,18 @@ class ChatSimulatorUtils:
         return context, block_context
 
     def build_context(self, history: List[Dict[str, str]], round_num) -> str:
+        months_passed = round_num * self.months_per_round
         context = f"📌 Тема обсуждения: {self.topic}\n\n"
+        context += f"⏳ С начала кампании прошло {months_passed} мес.\n"
+        if round_num == self.rounds - 1:
+            context += "🏁 Итоговый раунд. Вспомните все предыдущие сценарии и решения.\n"
+        if self.scenario_change_message:
+            context += self.scenario_change_message + "\n"
+            self.scenario_change_message = ""
+        if self.resources_pool:
+            res_list = ", ".join(self.resources_pool)
+            context += f"📦 Нужды города: {res_list}\n"
+
         if history:
             context += "🔨️ Последние реплики. Используй для реакции. Строй СВОЮ точку зрения на ситуацию.\n"
             context += "\n".join([f"{turn['speaker']}: {turn['text']}" for turn in history[-1000:]])
@@ -172,17 +193,19 @@ class ChatSimulatorUtils:
 
     def select_scenario_for_round(self, round_num):
         """Выбирает сценарий для текущего раунда"""
-        # Можете использовать последовательный выбор
-        scenario_id = self.election_scenarios[round_num % len(self.election_scenarios)]
-        
-        # Или случайный выбор с весами
-        # scenario_id = random.choices(self.election_scenarios, weights=[...])[0]
-        
-        # Или выбор на основе состояния города
-        # if self.check_resource_crisis():
-        #     scenario_id = "hungry_winter"
-        
-        self.current_scenario = ElectionScenario(scenario_id)
+        if round_num == self.rounds - 1:
+            scenario_id = "normal_election"
+        else:
+            index = (round_num // self.scenario_change_interval) % len(self.election_scenarios)
+            scenario_id = self.election_scenarios[index]
+
+        new_scenario = ElectionScenario(scenario_id)
+        if self.current_scenario and self.current_scenario.current_scenario['name'] != new_scenario.current_scenario['name']:
+            self.scenario_change_message = (
+                f"⚠️ Завершился сценарий '{self.current_scenario.current_scenario['name']}'. "
+                f"Начался '{new_scenario.current_scenario['name']}'"
+            )
+        self.current_scenario = new_scenario
         logging.info(f"📋 Сценарий раунда {round_num}: {self.current_scenario.current_scenario['name']}")
         return self.current_scenario
     
@@ -458,7 +481,7 @@ class ChatSimulatorUtils:
           for speaker, alloc in self.allocation_promises.items():
               pairs = "; ".join(f"{k}:{v}" for k, v in alloc.items())
               alloc_context += f"{speaker}: {pairs}\n"
-      prompt = build_distribution_prompt(pres, self.money_pool, context_vote + alloc_context)
+      prompt = build_distribution_prompt(pres, self.money_pool, self.resources_pool, context_vote + alloc_context)
       res = await Runner.run(chat_agent, prompt)
       logging.info(f"💰 Распределение от {pres.name}: {res.raw_output}")
       raw = extract_text(res)
