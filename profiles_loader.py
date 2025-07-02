@@ -4,6 +4,7 @@ import math
 import json
 from typing import List
 from models import Person, HistoryEvent
+from llm_api import call_openai
 
 SCELETON_PATH = "./skeletons"
 
@@ -94,13 +95,43 @@ def df_to_people_extended(df: pd.DataFrame, profiles_path: str) -> List[Person]:
             print(f"⚠️ Ошибка валидации строки:\n{e}\n---\n{row.to_dict()}\n")
     return people
 
-def load_people(path: str, limit: int = 10) -> List[Person]:
-    people = []
-    files = sorted([
-        f for f in os.listdir(path)
-        if f.endswith(".csv")
-    ])[:limit]
+# def load_people(path: str, limit: int = 10) -> List[Person]:
+#     people = []
+#     files = sorted([
+#         f for f in os.listdir(path)
+#         if f.endswith(".csv")
+#     ])[:limit]
 
+#     for filename in files:
+#         file_path = os.path.join(path, filename)
+#         try:
+#             df = pd.read_csv(file_path)
+#             new_people = df_to_people_extended(df, SCELETON_PATH)
+#             people.extend(new_people)
+#         except Exception as e:
+#             print(f"⚠️ Ошибка при чтении {filename}: {e}")
+
+#     return people
+
+def load_people(
+    path: str | None,
+    limit: int = 50,
+    generate: int = 0,
+    llm_caller=call_openai,
+) -> List[Person]:
+    """Load people either from CSV files or generate via LLM."""
+    if generate > 0:
+        from character_generator import generate_characters, characters_to_people
+        import asyncio
+
+        chars = asyncio.run(generate_characters(generate, llm_caller))
+        return characters_to_people(chars)
+
+    if not path:
+        raise ValueError("path must be provided when generate=0")
+    
+    files = sorted([f for f in os.listdir(path) if f.endswith(".csv")])[:limit]
+    people = []
     for filename in files:
         file_path = os.path.join(path, filename)
         try:
@@ -110,4 +141,32 @@ def load_people(path: str, limit: int = 10) -> List[Person]:
         except Exception as e:
             print(f"⚠️ Ошибка при чтении {filename}: {e}")
 
+    return people
+
+def save_people_to_file(people: List[Person], filename: str):
+    """Сохраняет персонажей в файл"""
+    # Конвертируем в DataFrame
+    df = pd.DataFrame([p.model_dump() for p in people])
+    
+    # Сохраняем в CSV
+    df.to_csv(filename, index=False, encoding='utf-8')
+    print(f"💾 Сохранено {len(people)} персонажей в {filename}")
+    
+    # Дополнительно сохраняем в JSON для полного восстановления
+    json_filename = filename.replace('.csv', '.json')
+    with open(json_filename, 'w', encoding='utf-8') as f:
+        json.dump([p.model_dump() for p in people], f, ensure_ascii=False, indent=2)
+    print(f"💾 Также сохранено в {json_filename}")
+
+def load_people_from_file(filename: str) -> List[Person]:
+    """Загружает персонажей из файла"""
+    if filename.endswith('.json'):
+        with open(filename, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        people = [Person(**item) for item in data]
+    else:
+        df = pd.read_csv(filename)
+        people = [Person(**row.to_dict()) for _, row in df.iterrows()]
+    
+    print(f"📂 Загружено {len(people)} персонажей из {filename}")
     return people

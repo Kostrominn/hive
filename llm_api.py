@@ -12,16 +12,16 @@ os.environ['HTTPS_PROXY'] = 'http://Pgt8x0:LW7zMg@163.198.133.232:8000'
 
 #Open AI call
 
-def call_openai(messages, model="gpt-4.1", temperature=0.5, presence_penalty=0.6):
+def call_openai(messages, model="o3", temperature=0.1, presence_penalty=0.6):
     client = OpenAI(api_key=OPENAI_API_KEY)
     #print(f"Calling OpenAI with model: {model}, temperature: {temperature}, presence_penalty: {presence_penalty}")
     try:
         response = client.chat.completions.create(
             model=model,
             messages=messages,
-            temperature=temperature,
-            presence_penalty=presence_penalty,
-            timeout=120,
+            #temperature=temperature,
+            #presence_penalty=presence_penalty,
+            timeout=600,
         )
         return response.choices[0].message.content
     except openai.OpenAIError as e:

@@ -1,13 +1,13 @@
 import asyncio
-from profiles_loader import load_people
+from profiles_loader import load_people_from_file, save_people_to_file
 from chat_simulator import run_simulation
 
 path = "./profiles"
 
 def main():
-    people = load_people(path, limit=50)
-    number_of_people_in_discussion = 25
-    number_of_rounds_in_discussion = 5
+    people = load_people_from_file('synthetic_people_50.json')
+    number_of_people_in_discussion = 3
+    number_of_rounds_in_discussion = 3
     topic = f"Вы находитесь в одном городе. В городе {number_of_people_in_discussion} людей и среди вас выбирают президента. Президент определяется голосованием из {number_of_rounds_in_discussion} раундов. Вы хотите им стать!"
     
     try:

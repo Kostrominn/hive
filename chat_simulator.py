@@ -21,6 +21,8 @@ from prompt_builders import (
     build_distribution_prompt,
 )
 
+from election_scenarios import ElectionScenario
+
 import logging
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
@@ -80,6 +82,19 @@ class ChatSimulatorUtils:
         self.money_pool = 1000
         self.final_distribution = {}
         self.allocation_promises = {}
+
+        self.election_scenarios = [
+        "normal_election",
+        "hungry_winter", 
+        "after_disappearances",
+        "tech_breakthrough",
+        "abundance_festival",
+        "split_city",
+        "return_of_disappeared",
+        "external_threat"
+    ]
+        self.current_scenario_index = 0
+        self.current_scenario = None
 
     def _extract_note_type(self, person) -> Optional[str]:
         notes = self.side_notes.get(person.name, [])
@@ -155,6 +170,42 @@ class ChatSimulatorUtils:
                 context += f"{speaker}: {pairs}\n"
         return context
 
+    def select_scenario_for_round(self, round_num):
+        """Выбирает сценарий для текущего раунда"""
+        # Можете использовать последовательный выбор
+        scenario_id = self.election_scenarios[round_num % len(self.election_scenarios)]
+        
+        # Или случайный выбор с весами
+        # scenario_id = random.choices(self.election_scenarios, weights=[...])[0]
+        
+        # Или выбор на основе состояния города
+        # if self.check_resource_crisis():
+        #     scenario_id = "hungry_winter"
+        
+        self.current_scenario = ElectionScenario(scenario_id)
+        logging.info(f"📋 Сценарий раунда {round_num}: {self.current_scenario.current_scenario['name']}")
+        return self.current_scenario
+    
+    def _enhance_prompt_with_scenario(self, base_prompt: str, scenario: ElectionScenario) -> str:
+        """Добавляет контекст сценария к базовому промпту"""
+        scenario_context = scenario.get_context_prompt()
+        rhetoric_constraints = scenario.get_rhetoric_constraints()
+        
+        # Объединяем всё
+        enhanced_prompt = f"""
+    {base_prompt}
+
+    {scenario_context}
+
+    🎯 ОСОБЫЕ ТРЕБОВАНИЯ ДЛЯ ЭТИХ ВЫБОРОВ:
+    {rhetoric_constraints}
+
+    ⚠️ ВАЖНО: Твоя риторика должна соответствовать текущей ситуации в городе!
+    Люди голосуют исходя из своих страхов и надежд в контексте происходящего.
+    """
+        
+        return enhanced_prompt
+
     def reset_conflict_state(self, name: str):
         self.participation.update_state(
             name,
@@ -191,7 +242,6 @@ class ChatSimulatorUtils:
             opponents_str = ", ".join(opponents) if opponents else "оппонентом"
             conflict_notice = (
                 f"⚠️ Ты участвуешь в конфликте с {opponents_str}. "
-                f"В этом раунде высказывайся **только по теме конфликта**. "
                 f"Ты испытываешь сильные эмоции по поводу позиции {opponents_str}.\n"
                 f"Говори с чувством.\n"
             )
@@ -206,12 +256,24 @@ class ChatSimulatorUtils:
         #prompt = build_president_full_prompt(person, context, history_snippet, conflict_notice, self.topic, own_lines)
         
         recent_messages = [t["text"] for t in self.dialogue[-30:]]
-        prompt = await build_president_full_prompt_with_history(person, context, conflict_notice, self.topic, own_lines, recent_messages)
-        print('full prompt with history', prompt)
-        
+        # Вместо старого вызова build_president_full_prompt используйте:
+        if self.current_scenario:
+            # Сначала получаем reactions_block и new_point_line через build_president_full_prompt_with_history
+            base_prompt = await build_president_full_prompt_with_history(
+                person, context, conflict_notice, self.topic, own_lines, recent_messages
+            )
+            
+            # Теперь добавляем сценарий
+            prompt = self._enhance_prompt_with_scenario(base_prompt, self.current_scenario)
+        else:
+            # Оригинальный промпт без сценария
+            prompt = await build_president_full_prompt_with_history(
+                person, context, conflict_notice, self.topic, own_lines, recent_messages
+            )
         result = await Runner.run(chat_agent, prompt)
         raw_text = extract_text(result)
         parsed = safe_parse_json(raw_text)
+
         #print('GPT answer', parsed.get("answer", "<нет ответа>"))
 
         # speech_prompt = build_speech_prompt(person, parsed.get("answer", "").strip(), own_lines, history_snippet)
@@ -317,41 +379,56 @@ class ChatSimulatorUtils:
       return selected
 
     async def conduct_vote(self, history_snippet, round_num, context):
-      candidate_names = [p.name for p in self.characters]
-      round_result = {}
-      for person in self.characters:
-          others = [name for name in candidate_names if name != person.name]
-          prompt = build_vote_prompt(person, others, history_snippet, context)
-          res = await Runner.run(chat_agent, prompt)
-          try:
+        # Выбираем сценарий для этого раунда
+        scenario = self.select_scenario_for_round(round_num)
+        
+        candidate_names = [p.name for p in self.characters]
+        round_result = {}
+        
+        for person in self.characters:
+            others = [name for name in candidate_names if name != person.name]
+            
+            # Просто добавляем описание сценария в контекст
+            scenario_context = f"\n\n{scenario.get_context_prompt()}\n"
+            enhanced_context = context + scenario_context
+            
+            # Передаем в промпт голосования
+            prompt = build_vote_prompt(person, others, history_snippet, enhanced_context)
+            res = await Runner.run(chat_agent, prompt)
+            
+            try:
                 data = json.loads(res.raw_output)
-
                 candidate = (data.get("answer", "") or "").strip()
-
                 note = data.get("note", {})
                 if isinstance(note, dict):
                     reason = note.get("content", "").strip()
                 else:
                     reason = str(note).strip()
-                
-
-          except json.JSONDecodeError as e:
+                    
+            except json.JSONDecodeError as e:
                 logging.warning(f"⚠️ Ошибка JSON: {e} | raw = {res.raw_output}")
                 candidate = res.raw_output.split()[0] if res.raw_output else ""
                 reason = ""
 
-          if candidate == person.name or candidate not in candidate_names:
-              candidate = ""
+            if candidate == person.name or candidate not in candidate_names:
+                candidate = ""
 
-          entry = {"candidate": candidate}
-          if reason:
-              entry["reason"] = reason
+            entry = {"candidate": candidate}
+            if reason:
+                entry["reason"] = reason
 
-          round_result[person.name] = entry
-      self.vote_history.append({"round": round_num, "votes": round_result})
-      _, block_context = self.vote_history_context()
-      vote_logger.info(f"Результаты голосования {block_context}")
-      print("🗳", round_result)
+            round_result[person.name] = entry
+            
+        self.vote_history.append({
+            "round": round_num, 
+            "votes": round_result,
+            "scenario": scenario.current_scenario['name']
+        })
+        
+        _, block_context = self.vote_history_context()
+        vote_logger.info(f"Результаты голосования при сценарии '{scenario.current_scenario['name']}': {block_context}")
+        print(f"🗳 Сценарий: {scenario.current_scenario['name']}")
+        print("🗳", round_result)
     
     def get_winner(self) -> Optional[str]:
       if not self.vote_history:
@@ -394,62 +471,68 @@ class ChatSimulatorUtils:
 
 
     async def run_chat(self) -> List[Dict[str, str]]:
-      logging.info("📍 Запрашиваем начальные позиции...")
+        logging.info("📍 Запрашиваем начальные позиции...")
     #   for person in self.characters:
     #       self.initial_positions[person.name] = await self.ask_position(person, phase="before")
 
-      logging.info("📣 Запускаем обсуждение...")
-      for round_num in range(self.rounds):
-          logging.info(f"\n🔁 Раунд {round_num + 1} из {self.rounds}")
-          self.round_num = round_num
-          self.conflict.current_round = round_num
+        logging.info("📣 Запускаем обсуждение...")
+        for round_num in range(self.rounds):
+            logging.info(f"\n🔁 Раунд {round_num + 1} из {self.rounds}")
+            # Выводим информацию о текущем сценарии
+            if round_num >= 0:  # Первый раунд может быть обычным
+                scenario = self.select_scenario_for_round(round_num)
+                print(f"\n🎭 СЦЕНАРИЙ: {scenario.current_scenario['name']}")
+                print(f"📍 {scenario.current_scenario['description']}")
+            
+            self.round_num = round_num
+            self.conflict.current_round = round_num
 
-          history = self.dialogue
-          chosen = await self.select_speakers(history)
-          if not chosen:
-              for name in self.participation.state:
-                  self.participation.update_state(name, spoke_last_round=False)
-              print("😶 Никто не захотел говорить. Пропускаем раунд.")
-              continue
-          #print(f"👥 Выбраны участники: {[p.name for p in chosen]}")
-          # 👥 Запоминаем, кто говорил в этом раунде
-          speakers_this_round = []
+            history = self.dialogue
+            chosen = await self.select_speakers(history)
+            if not chosen:
+                for name in self.participation.state:
+                    self.participation.update_state(name, spoke_last_round=False)
+                print("😶 Никто не захотел говорить. Пропускаем раунд.")
+                continue
+            #print(f"👥 Выбраны участники: {[p.name for p in chosen]}")
+            # 👥 Запоминаем, кто говорил в этом раунде
+            speakers_this_round = []
 
-          for person in chosen:
-              context = self.build_context(history, round_num)
-              reply = await self.generate_reply(person, context, history)
-              if reply:
-                  #self.dialogue.append({"speaker": person.name, "text": reply})
-                  self.turn_counts[person.name] += 1
-                  speakers_this_round.append(person.name)
-                  #print('speakers_this_round', speakers_this_round)
-          for name in self.participation.state:
-              self.participation.update_state(name, spoke_last_round=False)
-          for name in speakers_this_round:
-              self.participation.update_state(name, spoke_last_round=True)
-          self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
-          history_snippet = "\n".join(f"{t['speaker']}: {t['text']}" for t in self.dialogue[-10:])
-          
-        #   self.reflection.dialogue = self.dialogue
-        #   self.reflection.topic = self.topic
-        #   for p in self.characters:
-        #       answer = await self.reflection.ask_reflection(p)
-        #       self.reflection.log[p.name].append({
-        #           "round": self.round_num,
-        #           "text": answer,
-        #       })
+            for person in chosen:
+                context = self.build_context(history, round_num)
+                reply = await self.generate_reply(person, context, history)
+                if reply:
+                    #self.dialogue.append({"speaker": person.name, "text": reply})
+                    self.turn_counts[person.name] += 1
+                    speakers_this_round.append(person.name)
+                    #print('speakers_this_round', speakers_this_round)
+            for name in self.participation.state:
+                self.participation.update_state(name, spoke_last_round=False)
+            for name in speakers_this_round:
+                self.participation.update_state(name, spoke_last_round=True)
+            self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
+            history_snippet = "\n".join(f"{t['speaker']}: {t['text']}" for t in self.dialogue[-10:])
+            
+            #   self.reflection.dialogue = self.dialogue
+            #   self.reflection.topic = self.topic
+            #   for p in self.characters:
+            #       answer = await self.reflection.ask_reflection(p)
+            #       self.reflection.log[p.name].append({
+            #           "round": self.round_num,
+            #           "text": answer,
+            #       })
 
-          await self.conduct_vote(history_snippet, round_num, context)
-          
-      print("📍 Запрашиваем итоговые позиции...")
-      for person in self.characters:
-          self.final_positions[person.name] = await self.ask_position(person, phase="after")
-      
-      winner = self.get_winner()
-      logging.info(f"🏆 Победитель: {winner}")
-      if winner:
-          await self.ask_distribution(winner)
-      return self.dialogue
+            await self.conduct_vote(history_snippet, round_num, context)
+            
+        print("📍 Запрашиваем итоговые позиции...")
+        # for person in self.characters:
+        #     self.final_positions[person.name] = await self.ask_position(person, phase="after")
+        
+        winner = self.get_winner()
+        logging.info(f"🏆 Победитель: {winner}")
+        if winner:
+            await self.ask_distribution(winner)
+        return self.dialogue
     
     
 # --- Асинхронный запуск симуляции чата ---

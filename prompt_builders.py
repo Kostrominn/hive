@@ -57,7 +57,14 @@ def select_panelists_with_call_openai(topic: str, people: List[Person], number_o
     Выбирает количество людей, указанное в ``number_of_people``, для участия в дискуссии.
     """
     prompt = build_selection_prompt(topic, people, number_of_people)
+    print(prompt)
+    print('*'*50)
     raw_json = call_openai([{"role": "user", "content": prompt}])
+    print("Полученный raw_json:")
+    print(f"Тип: {type(raw_json)}")
+    print(f"Длина: {len(raw_json) if raw_json else 'None/Empty'}")
+    print(f"Содержимое: '{raw_json}'")
+    print("="*50)
     data = json.loads(raw_json)
     
     print("Причина выбора:", data.get("reason", ""))
@@ -163,6 +170,7 @@ def build_selection_prompt(topic: str, people: List[Person], number_of_people: i
 
 def build_vote_prompt(person: Person, candidates: List[str], history_snippet: str, context) -> str:
     candidate_str = ", ".join(candidates)
+    print('candidate_str', candidate_str)
     return build_vote_prompt_prompt(person, candidate_str, history_snippet, context)
 
 def build_distribution_prompt(person: Person, money: int, context: str) -> str:
