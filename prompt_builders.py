@@ -173,8 +173,8 @@ def build_vote_prompt(person: Person, candidates: List[str], history_snippet: st
     print('candidate_str', candidate_str)
     return build_vote_prompt_prompt(person, candidate_str, history_snippet, context)
 
-def build_distribution_prompt(person: Person, money: int, context: str) -> str:
-    return build_distribution_prompt_prompt(person, money, context)
+def build_distribution_prompt(person: Person, money: int, resources, context: str) -> str:
+    return build_distribution_prompt_prompt(person, money, resources, context)
 
 async def build_full_prompt_with_history(person: Person, context_snippet: str, history_snippet: str, 
                                        conflict_notice: str, topic: str, own_lines: str, 

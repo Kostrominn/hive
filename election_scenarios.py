@@ -202,6 +202,7 @@ class ElectionScenario:
 
 ⚠️ Приоритет для избирателей:
 {scenario['special_rules'].voters_priority if scenario['special_rules'].voters_priority else 'Стандартные приоритеты'}
+
 """
 
     def get_rhetoric_constraints(self) -> str:
