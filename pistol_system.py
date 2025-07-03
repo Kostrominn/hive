@@ -1,6 +1,18 @@
 import re
 import random
+import logging
 from typing import Dict, List, Optional, Set
+
+
+# Настраиваем отдельный логгер для системы пистолетов
+pistol_logger = logging.getLogger("pistol")
+pistol_logger.setLevel(logging.INFO)
+pistol_handler = logging.FileHandler("pistols.log", encoding="utf-8")
+pistol_handler.setFormatter(
+    logging.Formatter("[%(asctime)s] %(levelname)s - %(message)s", datefmt="%m-%d %H:%M")
+)
+pistol_logger.addHandler(pistol_handler)
+pistol_logger.propagate = False
 
 
 class PistolSystem:
@@ -18,6 +30,8 @@ class PistolSystem:
         """Spawn a random number of pistols for this round."""
         self.available_pistols = random.randint(1, 3)
         self.pistol_requests = {}
+        pistol_logger.info(
+            f"Round {round_num}: spawned {self.available_pistols} pistols")
         return (
             f"\U0001f52b \u0412 \u0433\u043e\u0440\u043e\u0434\u0435 \u043f\u043e\u044f\u0432\u0438\u043b\u043e\u0441\u044c {self.available_pistols} \u043f\u0438\u0441\u0442\u043e\u043b\u0435\u0442(\u043e\u0432)!"
         )
@@ -31,6 +45,7 @@ class PistolSystem:
                 "intensity": random.random(),
                 "reason": "request",
             }
+            pistol_logger.info(f"{name} requested a pistol")
             return True
         return False
 
@@ -57,9 +72,12 @@ class PistolSystem:
             winners.append(f"{person} ({data.get('reason', '')})")
         self.available_pistols = max(self.available_pistols - len(winners), 0)
         if winners:
+            pistol_logger.info(
+                f"Distributed pistols to: {', '.join(winners)}")
             return (
                 f"\U0001f3af \u041f\u0438\u0441\u0442\u043e\u043b\u0435\u0442\u044b \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u0438: {', '.join(winners)}"
             )
+        pistol_logger.info("No pistols distributed")
         return None
 
     def resolve_duel(self, duel: Dict[str, str]) -> str:
@@ -83,14 +101,19 @@ class PistolSystem:
         else:
             msg = f"\ud83d\udc4a {challenger} \u0438 {target} \u043f\u043e\u0434\u0440\u0430\u043b\u0438\u0441\u044c, \u043d\u043e \u043d\u0438\u043a\u0442\u043e \u043d\u0435 \u0443\u043c\u0435\u0440."
         self.duel_history.append({"challenger": challenger, "target": target, "message": msg})
+        pistol_logger.info(f"Duel result: {msg}")
         return msg
 
     def handle_presidency(self, new_president: str) -> str:
         self.current_president = new_president
         if new_president in self.pistol_owners:
             self.pistol_owners.remove(new_president)
-            return f"\U0001f3dc\ufe0f {new_president} \u0441\u0442\u0430\u043b \u043f\u0440\u0435\u0437\u0438\u0434\u0435\u043d\u0442\u043e\u043c \u0438 \u043e\u0442\u0434\u0430\u043b \u043f\u0438\u0441\u0442\u043e\u043b\u0435\u0442!"
-        return f"\U0001f3dc\ufe0f {new_president} \u0441\u0442\u0430\u043b \u043f\u0440\u0435\u0437\u0438\u0434\u0435\u043d\u0442\u043e\u043c."
+            msg = f"\U0001f3dc\ufe0f {new_president} \u0441\u0442\u0430\u043b \u043f\u0440\u0435\u0437\u0438\u0434\u0435\u043d\u0442\u043e\u043c \u0438 \u043e\u0442\u0434\u0430\u043b \u043f\u0438\u0441\u0442\u043e\u043b\u0435\u0442!"
+            pistol_logger.info(msg)
+            return msg
+        msg = f"\U0001f3dc\ufe0f {new_president} \u0441\u0442\u0430\u043b \u043f\u0440\u0435\u0437\u0438\u0434\u0435\u043d\u0442\u043e\u043c."
+        pistol_logger.info(msg)
+        return msg
 
     def get_status_for_prompt(self) -> str:
         owners = ", ".join(self.pistol_owners) if self.pistol_owners else "никто"
