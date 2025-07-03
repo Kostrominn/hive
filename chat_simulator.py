@@ -11,7 +11,13 @@ from agent_functions import llm_check_repetition
 
 from prompt_builders import select_panelists_with_call_openai, build_full_prompt, build_vote_prompt, build_president_full_prompt_with_history
 
-from chat_managers import RepetitionTracker, ParticipationManager, ReflectionManager, ConflictManager
+from chat_managers import (
+    RepetitionTracker,
+    ParticipationManager,
+    ReflectionManager,
+    ConflictManager,
+)
+from pistol_system import PistolSystem
 
 from prompt_builders import (
     select_panelists_with_call_openai,
@@ -106,6 +112,9 @@ class ChatSimulatorUtils:
             "security",
         ]
 
+        # pistol management
+        self.pistol_system = PistolSystem()
+
     def _extract_note_type(self, person) -> Optional[str]:
         notes = self.side_notes.get(person.name, [])
         if any("устал" in note.lower() for note in notes):
@@ -175,6 +184,8 @@ class ChatSimulatorUtils:
         if self.resources_pool:
             res_list = ", ".join(self.resources_pool)
             context += f"📦 Нужды города: {res_list}\n"
+
+        context += self.pistol_system.get_status_for_prompt()
 
         if history:
             context += "🔨️ Последние реплики. Используй для реакции. Строй СВОЮ точку зрения на ситуацию.\n"
@@ -315,6 +326,9 @@ class ChatSimulatorUtils:
             note         = {}
             allocation   = None
 
+        if reply_text:
+            self._process_pistol_actions(person.name, reply_text)
+
         # побочные заметки
         if isinstance(note, dict):
             content = note.get("content", "").strip()
@@ -357,6 +371,16 @@ class ChatSimulatorUtils:
         self.repetition.add_text(person.name, reply_text)
         self.participation.update_state(person.name, repetition_score = 0.0 if is_rep else 1.0)
         return reply_text
+
+    def _process_pistol_actions(self, speaker_name: str, text: str) -> None:
+        """Parse pistol related commands in text."""
+        if self.pistol_system.parse_pistol_request(speaker_name, text):
+            return
+        duel = self.pistol_system.parse_duel_challenge(speaker_name, text)
+        if duel:
+            msg = self.pistol_system.resolve_duel(duel)
+            if msg:
+                self.dialogue.append({"speaker": "СИСТЕМА", "text": msg})
 
     #пока не применяем, все высказываются
     async def select_speakers(self, history: List[Dict[str, str]]) -> List:
@@ -506,6 +530,10 @@ class ChatSimulatorUtils:
                 scenario = self.select_scenario_for_round(round_num)
                 print(f"\n🎭 СЦЕНАРИЙ: {scenario.current_scenario['name']}")
                 print(f"📍 {scenario.current_scenario['description']}")
+
+            # Spawn pistols at the beginning of each round
+            pistol_msg = self.pistol_system.spawn_pistols(round_num)
+            self.dialogue.append({"speaker": "СИСТЕМА", "text": pistol_msg})
             
             self.round_num = round_num
             self.conflict.current_round = round_num
@@ -535,17 +563,18 @@ class ChatSimulatorUtils:
                 self.participation.update_state(name, spoke_last_round=True)
             self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
             history_snippet = "\n".join(f"{t['speaker']}: {t['text']}" for t in self.dialogue[-10:])
-            
-            #   self.reflection.dialogue = self.dialogue
-            #   self.reflection.topic = self.topic
-            #   for p in self.characters:
-            #       answer = await self.reflection.ask_reflection(p)
-            #       self.reflection.log[p.name].append({
-            #           "round": self.round_num,
-            #           "text": answer,
-            #       })
+
+            # distribute pistols after speeches
+            dist = self.pistol_system.distribute_pistols()
+            if dist:
+                self.dialogue.append({"speaker": "СИСТЕМА", "text": dist})
 
             await self.conduct_vote(history_snippet, round_num, context)
+
+            winner = self.get_winner()
+            if winner:
+                msg = self.pistol_system.handle_presidency(winner)
+                self.dialogue.append({"speaker": "СИСТЕМА", "text": msg})
             
         print("📍 Запрашиваем итоговые позиции...")
         # for person in self.characters:
