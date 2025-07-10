@@ -19,15 +19,18 @@ from uuid import uuid4
 from transaction_simulator.life_simulator import LifeTransactionSimulator
 from transaction_simulator.transaction_models import SimulationConfig
 from transaction_simulator.report_generator import ReportGenerator
-from flask import Flask, render_template_string, request, jsonify
+from flask import Flask, render_template_string, request, jsonify, Response, stream_with_context
+import threading
+import queue
 
 app = Flask(__name__)
+app.config["JSON_AS_ASCII"] = False
 
 FORM_HTML = """
 <!doctype html>
 <title>Life Simulator</title>
 <h1>Life Transaction Simulator</h1>
-<form method=post action="/simulate">
+<form id="simForm">
   Имя: <input name=name value="Александр Петров"><br>
   Возраст: <input type=number name=age value=28><br>
   Пол:
@@ -45,6 +48,35 @@ FORM_HTML = """
   Дней симуляции: <input type=number name=days value=3><br>
   <input type=submit value="Старт">
 </form>
+<pre id="output"></pre>
+<script>
+document.getElementById('simForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const params = new URLSearchParams(new FormData(e.target));
+  const out = document.getElementById('output');
+  out.textContent = '';
+  const es = new EventSource('/simulate_stream?' + params.toString());
+  es.onmessage = function(ev){
+    const msg = JSON.parse(ev.data);
+    if(msg.event === 'environment'){
+      out.textContent += '\n\uD83D\uDD39 Социальное окружение:\n';
+      msg.data.close_circle.forEach(function(p){
+        out.textContent += `  - ${p.name} (${p.relation}, ${p.age ?? '?'} лет)\n`;
+      });
+      msg.data.extended_circle.forEach(function(p){
+        out.textContent += `  - ${p.name} (${p.relation}, ${p.age ?? '?'} лет)\n`;
+      });
+    }else if(msg.event === 'day_result'){
+      out.textContent += `\n==============================\n\uD83D\uDCC5 ${msg.data.date} (${msg.data.day_context.day_of_week})\n`;
+      out.textContent += `\uD83D\uDCB0 Потрачено: ${msg.data.day_summary.total_spent} руб\n`;
+      out.textContent += `\uD83D\uDE0A Настроение: ${msg.data.day_summary.mood_trajectory.slice(0,100)}...\n`;
+    }else if(msg.event === 'complete'){
+      out.textContent += '\n\u2705 Симуляция завершена';
+      es.close();
+    }
+  };
+});
+</script>
 """
 
 def run_web_interface():
@@ -88,6 +120,52 @@ def simulate_route():
     simulator = LifeTransactionSimulator(config, [person])
     simulation_result = asyncio.run(simulator.run_simulation())
     return jsonify(simulation_result)
+
+
+@app.route("/simulate_stream")
+def simulate_stream_route():
+    """Запускает симуляцию и стримит прогресс через SSE"""
+    person = Person(
+        id=str(uuid4()),
+        name=request.args.get("name", "Александр Петров"),
+        age=int(request.args.get("age", 28)),
+        gender=request.args.get("gender", "мужчина"),
+        profession=request.args.get("profession", "менеджер"),
+        income_level=request.args.get("income", "средний"),
+        family_status="не женат",
+        children=0,
+        region="Москва",
+        city_type="мегаполис",
+    )
+    days = int(request.args.get("days", 3))
+    start_date = datetime.now() - timedelta(days=days - 1)
+    config = SimulationConfig(
+        target_person_id=person.id,
+        start_date=start_date,
+        days=days,
+        memory_window=5,
+    )
+
+    simulator = LifeTransactionSimulator(config, [person])
+    q = queue.Queue()
+
+    def progress(event_type, data):
+        q.put({"event": event_type, "data": data})
+
+    async def run():
+        result = await simulator.run_simulation(progress_callback=progress)
+        q.put({"event": "complete", "data": result})
+
+    threading.Thread(target=lambda: asyncio.run(run()), daemon=True).start()
+
+    def generate():
+        while True:
+            item = q.get()
+            yield f"data: {json.dumps(item, ensure_ascii=False)}\n\n"
+            if item["event"] == "complete":
+                break
+
+    return Response(stream_with_context(generate()), mimetype="text/event-stream")
 
 async def run_console_simulation(args):
     """Запускает симуляцию в консольном режиме"""
