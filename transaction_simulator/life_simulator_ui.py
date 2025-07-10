@@ -15,6 +15,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Person
+from uuid import uuid4
 from transaction_simulator.life_simulator import LifeTransactionSimulator
 from transaction_simulator.transaction_models import SimulationConfig
 from transaction_simulator.report_generator import ReportGenerator
@@ -64,6 +65,7 @@ def index() -> str:
 def simulate_route():
     """Запускает симуляцию и возвращает результат"""
     person = Person(
+        id=str(uuid4()),
         name=request.form.get("name", "Александр Петров"),
         age=int(request.form.get("age", 28)),
         gender=request.form.get("gender", "мужчина"),
@@ -73,8 +75,6 @@ def simulate_route():
         children=0,
         region="Москва",
         city_type="мегаполис",
-        interests=[],
-        personality_traits=[],
     )
     days = int(request.form.get("days", 3))
     start_date = datetime.now() - timedelta(days=days - 1)
@@ -93,6 +93,7 @@ async def run_console_simulation(args):
     """Запускает симуляцию в консольном режиме"""
     # Создаем персону
     person = Person(
+        id=str(uuid4()),
         name=args.name,
         age=args.age,
         gender=args.gender,
@@ -102,8 +103,6 @@ async def run_console_simulation(args):
         children=args.children,
         region=args.region,
         city_type=args.city_type,
-        interests=args.interests.split(',') if args.interests else [],
-        personality_traits=args.traits.split(',') if args.traits else []
     )
     
     print(f"\n👤 Персонаж: {person.name}, {person.age} лет, {person.profession}")
