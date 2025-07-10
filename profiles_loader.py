@@ -6,7 +6,7 @@ from typing import List
 from models import Person, HistoryEvent
 from llm_api import call_openai
 
-SCELETON_PATH = "./skeletons"
+SCELETON_PATH = "../skeletons"
 
 def fix_nan(value):
     return None if value is None or (isinstance(value, float) and math.isnan(value)) else value

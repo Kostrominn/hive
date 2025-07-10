@@ -29,6 +29,9 @@ from prompt_builders import (
 
 from election_scenarios import ElectionScenario
 
+from pistol_system import PistolConfig
+import json 
+
 import logging
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
@@ -111,9 +114,9 @@ class ChatSimulatorUtils:
             "infrastructure",
             "security",
         ]
+        self.pistol_config = PistolConfig()
+        self.pistol_system = PistolSystem(self.pistol_config)
 
-        # pistol management
-        self.pistol_system = PistolSystem()
 
     def _extract_note_type(self, person) -> Optional[str]:
         notes = self.side_notes.get(person.name, [])
@@ -200,6 +203,12 @@ class ChatSimulatorUtils:
             for speaker, alloc in self.allocation_promises.items():
                 pairs = "; ".join(f"{k}:{v}" for k, v in alloc.items())
                 context += f"{speaker}: {pairs}\n"
+        if self.pistol_system.is_enabled():
+            context += """
+    🔫 В городе действует система пистолетов
+    - Некоторые участники могут быть вооружены
+    - Кто именно - неизвестно
+    """
         return context
 
     def select_scenario_for_round(self, round_num):
@@ -326,8 +335,6 @@ class ChatSimulatorUtils:
             note         = {}
             allocation   = None
 
-        if reply_text:
-            self._process_pistol_actions(person.name, reply_text)
 
         # побочные заметки
         if isinstance(note, dict):
@@ -429,10 +436,11 @@ class ChatSimulatorUtils:
         # Выбираем сценарий для этого раунда
         scenario = self.select_scenario_for_round(round_num)
         
-        candidate_names = [p.name for p in self.characters]
+        alive_characters = [p for p in self.characters if p.name not in self.pistol_system.dead_players]
+        candidate_names = [p.name for p in alive_characters]
         round_result = {}
         
-        for person in self.characters:
+        for person in alive_characters:
             others = [name for name in candidate_names if name != person.name]
             
             # Просто добавляем описание сценария в контекст
@@ -526,14 +534,15 @@ class ChatSimulatorUtils:
         for round_num in range(self.rounds):
             logging.info(f"\n🔁 Раунд {round_num + 1} из {self.rounds}")
             # Выводим информацию о текущем сценарии
+            pistol_announcement = self.pistol_system.announce_pistols(round_num) 
+            if pistol_announcement:
+                print(pistol_announcement)
+                self.dialogue.append({"speaker": "СИСТЕМА", "text": pistol_announcement})
+            
             if round_num >= 0:  # Первый раунд может быть обычным
                 scenario = self.select_scenario_for_round(round_num)
                 print(f"\n🎭 СЦЕНАРИЙ: {scenario.current_scenario['name']}")
                 print(f"📍 {scenario.current_scenario['description']}")
-
-            # Spawn pistols at the beginning of each round
-            pistol_msg = self.pistol_system.spawn_pistols(round_num)
-            self.dialogue.append({"speaker": "СИСТЕМА", "text": pistol_msg})
             
             self.round_num = round_num
             self.conflict.current_round = round_num
@@ -550,6 +559,8 @@ class ChatSimulatorUtils:
             speakers_this_round = []
 
             for person in chosen:
+                if person.name in self.pistol_system.dead_players:
+                    continue
                 context = self.build_context(history, round_num)
                 reply = await self.generate_reply(person, context, history)
                 if reply:
@@ -562,19 +573,37 @@ class ChatSimulatorUtils:
             for name in speakers_this_round:
                 self.participation.update_state(name, spoke_last_round=True)
             self.conflict.check_for_resolved_conflicts(self.round_num, self.reset_conflict_state)
+            # === ФАЗА 3: ОПРОС ЖЕЛАНИЙ ПОЛУЧИТЬ ПИСТОЛЕТ ===
+            alive_characters = [p for p in self.characters if p.name not in self.pistol_system.dead_players]
+            # ПЕРЕДАЕМ ДИАЛОГ В СИСТЕМУ ПИСТОЛЕТОВ
+            pistol_desires = await self.pistol_system.poll_pistol_desires(alive_characters, self.dialogue)
+            print(pistol_desires)
+            
+            # === ФАЗА 4: РАСПРЕДЕЛЕНИЕ ПИСТОЛЕТОВ ===
+            pistol_distribution = self.pistol_system.distribute_pistols(pistol_desires)
+            if pistol_distribution:
+                print(f"🎯 {pistol_distribution}")
+                self.dialogue.append({"speaker": "СИСТЕМА", "text": pistol_distribution})
+            
+            # === ФАЗА 5: ОПРОС ЖЕЛАНИЙ ДУЭЛИ ===
+            # ПЕРЕДАЕМ ДИАЛОГ В СИСТЕМУ ДУЭЛЕЙ
+            duel_challenges = await self.pistol_system.poll_duel_desires(alive_characters, self.dialogue, round_num)
+            
+            # === ФАЗА 6: РАЗРЕШЕНИЕ ДУЭЛЕЙ ===
+            duel_results = self.pistol_system.resolve_duels(duel_challenges)
+            for result in duel_results:
+                print(f"⚔️ {result}")
+                self.dialogue.append({"speaker": "СИСТЕМА", "text": result})
+            
+            # === ФАЗА 7: ГОЛОСОВАНИЕ ===
             history_snippet = "\n".join(f"{t['speaker']}: {t['text']}" for t in self.dialogue[-10:])
-
-            # distribute pistols after speeches
-            dist = self.pistol_system.distribute_pistols()
-            if dist:
-                self.dialogue.append({"speaker": "СИСТЕМА", "text": dist})
-
+            context = self.build_context(self.dialogue, round_num)
             await self.conduct_vote(history_snippet, round_num, context)
-
-            winner = self.get_winner()
-            if winner:
-                msg = self.pistol_system.handle_presidency(winner)
-                self.dialogue.append({"speaker": "СИСТЕМА", "text": msg})
+             
+            # winner = self.get_winner()
+            # if winner:
+            #     msg = self.pistol_system.handle_presidency(winner)
+            #     self.dialogue.append({"speaker": "СИСТЕМА", "text": msg})
             
         print("📍 Запрашиваем итоговые позиции...")
         # for person in self.characters:

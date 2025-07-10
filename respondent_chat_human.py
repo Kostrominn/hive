@@ -7,7 +7,7 @@ path = "./profiles"
 def main():
     people = load_people_from_file('synthetic_people_50.json')
     number_of_people_in_discussion = 3
-    number_of_rounds_in_discussion = 3
+    number_of_rounds_in_discussion = 5
     topic = f"Вы находитесь в одном городе. В городе {number_of_people_in_discussion} людей и среди вас выбирают президента. Президент определяется голосованием из {number_of_rounds_in_discussion} раундов. Вы хотите им стать!"
     
     try:

@@ -1,0 +1,566 @@
+2025-07-08 16:40:32,470 - transaction_simulator.life_simulator - INFO - Starting simulation for 02_Данилова 
+2025-07-08 16:40:32,470 - transaction_simulator.life_simulator - INFO - Period: 30 days from 2024-01-01 00:00:00
+2025-07-08 16:40:32,470 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 16:41:20,082 - transaction_simulator.life_simulator - INFO - Starting simulation for 02_Данилова 
+2025-07-08 16:41:20,083 - transaction_simulator.life_simulator - INFO - Period: 30 days from 2024-01-01 00:00:00
+2025-07-08 16:41:20,083 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 16:41:44,810 - transaction_simulator.life_simulator - INFO - Starting simulation for 02_Данилова 
+2025-07-08 16:41:44,810 - transaction_simulator.life_simulator - INFO - Period: 30 days from 2024-01-01 00:00:00
+2025-07-08 16:41:44,810 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 16:43:56,167 - transaction_simulator.life_simulator - INFO - Starting simulation for 02_Данилова 
+2025-07-08 16:43:56,167 - transaction_simulator.life_simulator - INFO - Period: 30 days from 2024-01-01 00:00:00
+2025-07-08 16:43:56,167 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 16:44:24,403 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:44:24,613 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/30
+2025-07-08 16:52:50,902 - transaction_simulator.life_simulator - INFO - Starting simulation for 02_Данилова 
+2025-07-08 16:52:50,902 - transaction_simulator.life_simulator - INFO - Period: 30 days from 2024-01-01 00:00:00
+2025-07-08 16:52:50,902 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 16:53:38,788 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:53:38,987 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/30
+2025-07-08 16:54:14,509 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:54:21,060 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:57:53,978 - transaction_simulator.life_simulator - INFO - Starting simulation for 02_Данилова 
+2025-07-08 16:57:53,979 - transaction_simulator.life_simulator - INFO - Period: 30 days from 2024-01-01 00:00:00
+2025-07-08 16:57:53,979 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 16:58:49,988 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:58:50,016 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/30
+2025-07-08 16:59:19,030 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:59:28,160 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:59:54,492 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 16:59:54,496 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 1136 RUB, Mood: Настроение плавно поднялось от лёгкой утренней радости к энергичному дружелюбию и завершилось тёплым чувством поддержки и спокойствия.
+2025-07-08 16:59:54,496 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/30
+2025-07-08 17:00:34,623 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:00:40,583 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:02:21,426 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:02:21,579 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 1195 RUB, Mood: Настроение плавно перешло от бодрой радости через тёплое чувство взаимной пользы к спокойному удовлетворённому ощущению поддержки.
+2025-07-08 17:02:21,579 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/30
+2025-07-08 17:03:05,051 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:03:13,444 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:03:55,022 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:03:55,306 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 1185 RUB, Mood: Настроение постепенно росло: от лёгкой бодрости перешло к чувству полезности и завершилось тёплой поддержкой.
+2025-07-08 17:03:55,306 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/30
+2025-07-08 17:04:59,532 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:05:05,532 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:05:39,367 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:05:39,387 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 1169 RUB, Mood: Настроение плавно перешло от собранного оптимизма через тёплую взаимную поддержку к уютному ощущению дружеской заботы.
+2025-07-08 17:05:39,387 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/30
+2025-07-08 17:06:27,901 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:06:34,178 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:07:06,966 - transaction_simulator.life_simulator - INFO - Starting simulation for 02_Данилова 
+2025-07-08 17:07:06,966 - transaction_simulator.life_simulator - INFO - Period: 10 days from 2024-01-01 00:00:00
+2025-07-08 17:07:06,966 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 17:07:51,379 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:07:51,402 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/10
+2025-07-08 17:08:19,722 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:08:20,026 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 1190 RUB, Mood: стабильное спокойствие
+2025-07-08 17:08:20,027 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/10
+2025-07-08 17:08:42,256 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:08:42,267 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 1070 RUB, Mood: стабильное спокойствие
+2025-07-08 17:08:42,268 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/10
+2025-07-08 17:09:19,529 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:09:19,534 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 1197 RUB, Mood: стабильное спокойствие
+2025-07-08 17:09:19,534 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/10
+2025-07-08 17:09:19,535 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-08 17:09:53,009 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:09:53,014 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 1050 RUB, Mood: стабильное спокойствие
+2025-07-08 17:09:53,014 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/10
+2025-07-08 17:10:12,856 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:10:12,860 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 1190 RUB, Mood: стабильное спокойствие
+2025-07-08 17:10:12,860 - transaction_simulator.life_simulator - INFO - 
+Simulating day 6/10
+2025-07-08 17:10:12,860 - transaction_simulator.life_simulator - INFO - Special event: повышение
+2025-07-08 17:10:24,794 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:10:25,008 - transaction_simulator.life_simulator - INFO - New person added: Александр Воробьёв
+2025-07-08 17:10:56,907 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:10:57,116 - transaction_simulator.life_simulator - INFO - Day 2024-01-06: Spent 1150 RUB, Mood: стабильное спокойствие
+2025-07-08 17:10:57,117 - transaction_simulator.life_simulator - INFO - 
+Simulating day 7/10
+2025-07-08 17:11:22,924 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:11:23,112 - transaction_simulator.life_simulator - INFO - Day 2024-01-07: Spent 1180 RUB, Mood: стабильное спокойствие
+2025-07-08 17:11:23,113 - transaction_simulator.life_simulator - INFO - 
+Simulating day 8/10
+2025-07-08 17:11:45,767 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:11:45,774 - transaction_simulator.life_simulator - INFO - Day 2024-01-08: Spent 1158 RUB, Mood: стабильное спокойствие
+2025-07-08 17:11:45,774 - transaction_simulator.life_simulator - INFO - 
+Simulating day 9/10
+2025-07-08 17:11:45,774 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-08 17:12:22,521 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:12:22,530 - transaction_simulator.life_simulator - INFO - Day 2024-01-09: Spent 1200 RUB, Mood: стабильное спокойствие
+2025-07-08 17:12:22,530 - transaction_simulator.life_simulator - INFO - 
+Simulating day 10/10
+2025-07-08 17:12:57,234 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:12:57,346 - transaction_simulator.life_simulator - INFO - Day 2024-01-10: Spent 1005 RUB, Mood: стабильное спокойствие
+2025-07-08 17:12:57,347 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-08 17:12:57,380 - transaction_simulator.life_simulator - INFO - Results saved to simulation_02_Данилова _20250708_171257.json
+2025-07-08 17:23:56,300 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-08 17:23:56,300 - transaction_simulator.life_simulator - INFO - Period: 10 days from 2024-01-01 00:00:00
+2025-07-08 17:23:56,300 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 17:24:31,477 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:24:31,694 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/10
+2025-07-08 17:25:04,418 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:25:10,691 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:25:32,507 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:25:32,515 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 650 RUB, Mood: День начался с тёплого ощущения заботы, затем перешёл в радостную близость и завершился спокойной уверенностью.
+2025-07-08 17:25:32,515 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/10
+2025-07-08 17:26:01,279 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:26:09,162 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:26:26,059 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:26:26,063 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 625 RUB, Mood: Настроение плавно поднималось: от тёплой лёгкой радости через спокойную, уютную заботу к радостной близости и вдохновению.
+2025-07-08 17:26:26,063 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/10
+2025-07-08 17:26:45,623 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:26:50,943 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:27:27,198 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:27:27,403 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 637 RUB, Mood: Настроение плавно перешло от бодрой тёплой поддержки к лёгкой радости и чувству близости, а затем поднялось до уверенности и вдохновения.
+2025-07-08 17:27:27,403 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/10
+2025-07-08 17:27:27,403 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-08 17:28:00,140 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:28:06,222 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:28:46,605 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:28:46,824 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 692 RUB, Mood: Настроение плавно выросло от лёгкой радости и поддержки к чувству уюта и близости, завершившись тёплым ощущением взаимной поддержки.
+2025-07-08 17:28:46,825 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/10
+2025-07-08 17:29:08,264 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:29:13,604 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:29:37,536 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:29:37,772 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 549 RUB, Mood: Настроение плавно поднялось от спокойной поддержки к тёплой радости и сближению, а к концу дня устоялось в уютном чувстве взаимной поддержки.
+2025-07-08 17:29:37,773 - transaction_simulator.life_simulator - INFO - 
+Simulating day 6/10
+2025-07-08 17:29:37,773 - transaction_simulator.life_simulator - INFO - Special event: повышение
+2025-07-08 17:29:45,026 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:29:45,030 - transaction_simulator.life_simulator - INFO - New person added: Светлана Михайлова
+2025-07-08 17:30:29,161 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:30:34,050 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:30:58,037 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:30:58,049 - transaction_simulator.life_simulator - INFO - Day 2024-01-06: Spent 664 RUB, Mood: День начался с гордости и тёплой поддержки, затем перешёл в игривое вдохновение и семейную близость, а завершился расслабленным теплом и удовлетворением.
+2025-07-08 17:30:58,049 - transaction_simulator.life_simulator - INFO - 
+Simulating day 7/10
+2025-07-08 17:31:37,973 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:31:43,553 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:32:05,313 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:32:05,353 - transaction_simulator.life_simulator - INFO - Day 2024-01-07: Spent 639 RUB, Mood: Настроение плавно поднималось от лёгкой радости и чувства поддержки, через игривое вдохновение и уверенную лёгкую гордость, к расслабленному семейному теплу.
+2025-07-08 17:32:05,353 - transaction_simulator.life_simulator - INFO - 
+Simulating day 8/10
+2025-07-08 17:32:36,546 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:32:41,815 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:33:03,334 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:33:03,595 - transaction_simulator.life_simulator - INFO - Day 2024-01-08: Spent 630 RUB, Mood: Настроение плавно поднялось от семейного тепла и лёгкой бодрости к уверенности и поддержке, завершившись радостью и чувством близости.
+2025-07-08 17:33:03,595 - transaction_simulator.life_simulator - INFO - 
+Simulating day 9/10
+2025-07-08 17:33:03,595 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-08 17:33:30,609 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:33:36,546 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:33:58,876 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:33:59,038 - transaction_simulator.life_simulator - INFO - Day 2024-01-09: Spent 668 RUB, Mood: Настроение плавно росло: от заботливой лёгкой радости утром перешло к теплому чувству гордости дома и завершилось уверенной поддержкой к концу дня.
+2025-07-08 17:33:59,039 - transaction_simulator.life_simulator - INFO - 
+Simulating day 10/10
+2025-07-08 17:34:20,792 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:34:25,904 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:35:07,280 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:35:07,471 - transaction_simulator.life_simulator - INFO - Day 2024-01-10: Spent 545 RUB, Mood: Настроение плавно перешло от заботливой лёгкой радости через тёплое чувство гордости и поддержки к спокойной уверенности и семейному единству.
+2025-07-08 17:35:07,471 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-08 17:37:36,032 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-08 17:37:36,032 - transaction_simulator.life_simulator - INFO - Period: 10 days from 2024-01-01 00:00:00
+2025-07-08 17:37:36,032 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-08 17:38:02,400 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:38:02,423 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/10
+2025-07-08 17:38:30,317 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:38:35,861 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:39:05,498 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:39:05,505 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 684 RUB, Mood: Настроение ровно повышалось: от лёгкой радости через дружеское тепло к воодушевлению.
+2025-07-08 17:39:05,505 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/10
+2025-07-08 17:39:24,711 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:39:29,833 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:40:03,246 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:40:03,257 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 590 RUB, Mood: Настроение плавно росло: от спокойного семейного тепла перешло к радостному чувству полезности и завершилось воодушевляющей благодарностью.
+2025-07-08 17:40:03,258 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/10
+2025-07-08 17:40:41,250 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:40:46,148 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:41:29,303 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:41:29,312 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 495 RUB, Mood: Настроение плавно поднималось: от тихого семейного тепла к лёгкой гордости за полезность, завершившись воодушевлённым спокойствием.
+2025-07-08 17:41:29,313 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/10
+2025-07-08 17:41:29,313 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-08 17:42:09,474 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:42:15,212 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:42:46,798 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:42:46,805 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 665 RUB, Mood: Настроение мягко поднялось от тёплого семейного спокойствия через лёгкую гордость за свою полезность к воодушевлённому спокойствию к концу дня.
+2025-07-08 17:42:46,805 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/10
+2025-07-08 17:43:15,416 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:43:19,824 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:43:55,664 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:43:55,673 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 689 RUB, Mood: Настроение плавно переходило от уюта и поддержки к лёгкой гордости и семейной близости, завершаясь воодушевлённым спокойствием.
+2025-07-08 17:43:55,673 - transaction_simulator.life_simulator - INFO - 
+Simulating day 6/10
+2025-07-08 17:43:55,673 - transaction_simulator.life_simulator - INFO - Special event: повышение
+2025-07-08 17:44:11,530 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:44:11,737 - transaction_simulator.life_simulator - INFO - New person added: Ксения Морозова
+2025-07-08 17:44:56,285 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:45:07,822 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:45:56,585 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 17:45:56,906 - transaction_simulator.life_simulator - INFO - Day 2024-01-06: Spent 700 RUB, Mood: Настроение плавно возрастало: от тёплой гордости утром, через игривую благодарность днём, к подъёму энергии и бодрому, воодушевлённому состоянию к вечеру.
+2025-07-08 17:45:56,907 - transaction_simulator.life_simulator - INFO - 
+Simulating day 7/10
+2025-07-08 20:43:35,303 - openai._base_client - INFO - Retrying request to /chat/completions in 0.400064 seconds
+2025-07-08 20:43:55,303 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:44:00,662 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:44:27,792 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:44:27,798 - transaction_simulator.life_simulator - INFO - Day 2024-01-07: Spent 642 RUB, Mood: Настроение плавно возросло: от спокойного уюта и лёгкой мотивации к тёплому ощущению заботы, завершившись энергичным воодушевлением.
+2025-07-08 20:44:27,798 - transaction_simulator.life_simulator - INFO - 
+Simulating day 8/10
+2025-07-08 20:44:52,394 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:44:58,610 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:45:37,539 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:45:37,918 - transaction_simulator.life_simulator - INFO - Day 2024-01-08: Spent 685 RUB, Mood: Настроение плавно перешло от тёплой мотивирующей поддержки к ощущению полезности и семейной близости, завершившись укрепившейся уверенностью и спокойным удовлетворением.
+2025-07-08 20:45:37,919 - transaction_simulator.life_simulator - INFO - 
+Simulating day 9/10
+2025-07-08 20:45:37,919 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-08 20:45:58,979 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:46:04,689 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:46:24,133 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:46:24,522 - transaction_simulator.life_simulator - INFO - Day 2024-01-09: Spent 700 RUB, Mood: Настроение плавно поднялось от спокойного тепла и заботы к чувству полезности и семейной близости, завершившись лёгкой радостью и уверенностью.
+2025-07-08 20:46:24,522 - transaction_simulator.life_simulator - INFO - 
+Simulating day 10/10
+2025-07-08 20:46:48,782 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:46:56,193 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:47:30,715 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-08 20:47:30,722 - transaction_simulator.life_simulator - INFO - Day 2024-01-10: Spent 654 RUB, Mood: Настроение последовательно росло: от лёгкой поддержки и заботы оно перешло к чувству полезности и семейной радости, а завершилось тёплым, уверенным ощущением семейного благополучия.
+2025-07-08 20:47:30,722 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 12:02:57,583 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 12:02:57,584 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 12:02:57,584 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 12:03:29,826 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:03:29,858 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 12:03:48,152 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:03:53,245 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:04:23,969 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:04:23,976 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 690 RUB, Mood: Настроение плавно возросло от лёгкой радости, через воодушевление, к тёплому спокойствию к завершению дня.
+2025-07-09 12:04:23,977 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/5
+2025-07-09 12:04:53,350 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:04:58,757 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:05:33,781 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:05:33,791 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 599 RUB, Mood: Настроение плавно поднялось от лёгкой радости и бодрости к воодушевлению и чувству единства, а к концу дня мягко перешло в тёплое спокойствие и поддержку.
+2025-07-09 12:05:33,791 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/5
+2025-07-09 12:05:33,791 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:06:00,745 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:06:06,515 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:06:30,722 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:06:30,728 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 665 RUB, Mood: Настроение плавно перетекало от лёгкой радости и бодрости к воодушевлению и ощущению единства, завершаясь тёплым спокойствием и взаимной поддержкой.
+2025-07-09 12:06:30,728 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/5
+2025-07-09 12:07:04,709 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:07:15,558 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:07:53,809 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:07:53,817 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 642 RUB, Mood: Настроение дня плавно поднялось от тёплой бодрости к воодушевлению и братской поддержке, а затем мягко стабилизировалось в спокойствии и уверенности.
+2025-07-09 12:07:53,817 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/5
+2025-07-09 12:07:53,817 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:08:16,477 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:08:30,980 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:09:04,159 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:09:04,181 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 647 RUB, Mood: Настроение плавно поднялось от лёгкой радости и поддержки через воодушевление и семейную близость к спокойному теплу и уверенной гармонии к концу дня.
+2025-07-09 12:09:04,182 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 12:18:12,734 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 12:18:12,734 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 12:18:12,734 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 12:19:05,182 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:19:05,203 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 12:19:41,238 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:19:41,512 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 698 RUB, Mood: стабильное спокойствие
+2025-07-09 12:19:41,512 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/5
+2025-07-09 12:20:13,354 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:20:13,361 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 679 RUB, Mood: стабильное спокойствие
+2025-07-09 12:20:13,361 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/5
+2025-07-09 12:20:13,361 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:20:54,418 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:20:54,429 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 686 RUB, Mood: стабильное спокойствие
+2025-07-09 12:20:54,429 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/5
+2025-07-09 12:21:14,693 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:21:14,858 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 685 RUB, Mood: стабильное спокойствие
+2025-07-09 12:21:14,859 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/5
+2025-07-09 12:21:14,859 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:21:48,508 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:21:48,517 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 675 RUB, Mood: стабильное спокойствие
+2025-07-09 12:21:48,517 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 12:23:57,424 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 12:23:57,424 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 12:23:57,424 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 12:24:34,903 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:24:34,926 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 12:25:41,089 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:25:48,770 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:26:36,083 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:26:36,093 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 680 RUB, Mood: Настроение плавно перетекло от уютной лёгкой мотивации через весёлое сближение к завершающей поддержке с ещё большей мотивацией.
+2025-07-09 12:26:36,093 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/5
+2025-07-09 12:26:58,082 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:27:09,210 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:27:33,272 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:27:33,285 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 620 RUB, Mood: День плавно перешёл от уютной поддерживающей мотивации через заряд бодрости и уверенности к весёлому, тёплому братско-сестринскому единению.
+2025-07-09 12:27:33,285 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/5
+2025-07-09 12:27:33,285 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:28:05,995 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:28:12,625 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:28:42,943 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:28:42,979 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 691 RUB, Mood: День начался со спокойного тёплого настроения, перетёк в весёлое чувство братско-сестринского единения и завершился вдохновляющей поддержкой и мотивацией.
+2025-07-09 12:28:42,980 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/5
+2025-07-09 12:29:10,351 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:29:15,911 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:29:45,454 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:29:45,686 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 659 RUB, Mood: Настроение плавно поднялось от тёплой спокойной поддержки через весёлое чувство единения к воодушевляющей мотивации.
+2025-07-09 12:29:45,686 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/5
+2025-07-09 12:29:45,686 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:30:22,652 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:30:29,404 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:31:01,317 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:31:01,339 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 679 RUB, Mood: Настроение постепенно росло: от спокойного семейного тепла через мотивирующее одобрение и весёлую близость к завершающему ощущению поддержки и уверенности.
+2025-07-09 12:31:01,339 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 12:31:01,376 - transaction_simulator.life_simulator - INFO - Results saved to simulation_10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a_20250709_123101.json
+2025-07-09 12:48:13,906 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 12:48:13,906 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 12:48:13,906 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 12:49:07,208 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:49:07,260 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 12:49:51,295 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:49:56,311 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:50:18,973 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:50:18,986 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 653 RUB, Mood: Настроение плавно поднялось от лёгкой радости и поддержки к тёплой близости и ощущению полезности, завершившись спокойным удовлетворением и семейным теплом.
+2025-07-09 12:50:18,986 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/5
+2025-07-09 12:51:25,612 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:51:31,927 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:52:06,700 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:52:06,928 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 650 RUB, Mood: День мягко перетёк от спокойного семейного тепла через возрастающее чувство поддержки и лёгкую радость к итоговому состоянию спокойного удовлетворения и единства.
+2025-07-09 12:52:06,928 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/5
+2025-07-09 12:52:06,928 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:52:36,136 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:52:43,934 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:53:08,181 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:53:08,191 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 664 RUB, Mood: Настроение плавно поднималось: от лёгкой бодрости в ощущении заботы к тёплой гордости и взаимной поддержке, завершившись спокойным семейным теплом и воодушевлением.
+2025-07-09 12:53:08,191 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/5
+2025-07-09 12:53:31,336 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:53:35,867 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:54:10,039 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:54:10,047 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 566 RUB, Mood: Настроение плавно росло: от тёплой бодрости утром через радостное чувство собственной пользы днём к вечерней гордости и семейной близости.
+2025-07-09 12:54:10,047 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/5
+2025-07-09 12:54:10,048 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 12:54:44,444 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:54:51,197 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:55:10,962 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 12:55:10,969 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 660 RUB, Mood: В течение дня настроение возвышалось от тёплой бодрости к уверенной поддержке и завершилось чувством семейной близости и гордости.
+2025-07-09 12:55:10,970 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 12:55:10,998 - transaction_simulator.life_simulator - INFO - Results saved to simulation_10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a_20250709_125510.json
+2025-07-09 14:41:18,833 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 14:41:18,833 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 14:41:18,834 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 14:41:47,074 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:41:47,265 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 14:42:23,014 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:45:39,504 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 14:45:39,504 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 14:45:39,504 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 14:46:08,305 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:46:08,336 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 14:47:03,583 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:47:14,852 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:47:50,531 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:47:50,797 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 415 RUB, Mood: Сонная семейная утренность постепенно разогрелась до уютной мотивации, взорвалась предвкушением весёлого вечера, обрела структуру через лёгкую математическую дисциплину и спортивный импульс, напиталась гордостью за помощь и ощущением соседской общности, а к ночи преобразилась в вдохновляющее чувство профессионального роста и креативного подъёма.
+2025-07-09 14:47:50,798 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/5
+2025-07-09 14:48:17,122 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:48:24,447 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:48:48,100 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:48:48,346 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 242 RUB, Mood: Утреннее чувство заботы плавно сменилось уверенным товариществом, которое подстегнуло работу над сочинением, а последующие успехи в проекте подняли командный азарт и ощущение профессионального роста, так что к лёгкой вечерней усталости добавились тёплая семейная гордость и решительный творческий подъём, подталкивающий поскорее закончить домашку ради новых идей.
+2025-07-09 14:48:48,346 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/5
+2025-07-09 14:48:48,346 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 14:49:27,962 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:49:34,732 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:49:59,925 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:50:00,087 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 851 RUB, Mood: Утреннее раздражение от маминого контроля смягчилось её заботой, мысли о скорой зарплате и ясный план разогнали лёгкую тревогу, участие в захватывающем tech-проекте подняло тонус и уверенность, а вечерний разговор с отцом завершил день волной гордости и тёплой благодарности.
+2025-07-09 14:50:00,087 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/5
+2025-07-09 14:50:40,067 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:50:46,618 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:51:32,685 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:51:32,914 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 175 RUB, Mood: Утренний уют плавно разгорел в желание действовать, перешёл в совместный энтузиазм, коротко встрепенулся волнением, но, подпитанный поддержкой, вылился в азартную продуктивность, а под вечер, сквозь физическую усталость, похвала вскипятила гордость и сохранила вдохновенную уверенность до самой ночи.
+2025-07-09 14:51:32,914 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/5
+2025-07-09 14:51:32,914 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 14:52:58,110 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:53:07,727 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:53:40,223 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 14:53:40,414 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 492 RUB, Mood: День начался с тёплого спокойствия под материнской опекой, перешёл в воодушевлённое ощущение общей цели, лёгкая критика придала стремительный импульс к росту, предвкушение скорого денежного поступления принесло радостное облегчение, а далее уверенный спортивный азарт вылился в мощный всплеск творческой энергии к вечеру.
+2025-07-09 14:53:40,414 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 14:53:40,448 - transaction_simulator.life_simulator - INFO - Results saved to simulation_10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a_20250709_145340.json
+2025-07-09 15:20:35,895 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 15:20:35,895 - transaction_simulator.life_simulator - INFO - Period: 3 days from 2024-01-01 00:00:00
+2025-07-09 15:20:35,895 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 15:21:05,566 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:21:05,598 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/3
+2025-07-09 15:22:27,783 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:22:38,278 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:23:14,366 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:23:14,586 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 195 RUB, Mood: Тёплое семейное утро с предвкушением праздника переросло в бодрое воодушевление общими задачами, подпиталось вдохновляющей профессиональной поддержкой, вспыхнуло творческим азартом на волне признания одноклассников, окрепло после спортивной разрядки и мягко улеглось в уюте вечерней семейной поддержки.
+2025-07-09 15:23:14,586 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/3
+2025-07-09 15:24:00,048 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:24:08,651 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:24:32,921 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:24:32,933 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 158 RUB, Mood: Спокойное утро с мягким ощущением заботы постепенно вспыхнуло воодушевлением от общей идеи, затем утвердилось уверенной ответственностью, перетёкшей в гордую мотивацию и азарт, закалило дисциплину и стремление к совершенству, согрело тёплым чувством полезности в команде и, наконец, к позднему вечеру разгорелось вдохновлённым профессиональным рывком.
+2025-07-09 15:24:32,933 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/3
+2025-07-09 15:25:41,056 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:25:51,789 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:26:18,602 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:26:18,809 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 160 RUB, Mood: Утренняя поддержка отца превратила лёгкую усталость в собранность, днём это расцвело в командное воодушевление и гордость за проект, позднее приятная востребованность и физическая усталость уступили место спортивному адреналину, а под вечер уверенная мотивация мягко перетекла в уют безопасности дома и вдохновляющую связь с семьёй на расстоянии.
+2025-07-09 15:26:18,810 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 15:26:18,826 - transaction_simulator.life_simulator - INFO - Results saved to simulation_10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a_20250709_152618.json
+2025-07-09 15:47:22,827 - transaction_simulator.life_simulator - INFO - Starting simulation for 10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a
+2025-07-09 15:47:22,827 - transaction_simulator.life_simulator - INFO - Period: 3 days from 2024-01-01 00:00:00
+2025-07-09 15:47:22,827 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 15:47:47,076 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:47:47,318 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/3
+2025-07-09 15:48:48,415 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:48:59,873 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:49:23,537 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:49:23,739 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 148 RUB, Mood: Мягкое семейное утро с ленивым пробуждением перетекло в воодушевлённый подъём после новости об автошколе и поддержки отца, закрепилось весёлой полезностью рядом с сестрой, разбежалось творческим драйвом в «своей тусовке», утвердило чувство взрослости, помогая соседям, и, наконец, встретило лёгкий дисциплинарный стресс, лишь подогревший решимость вернуться к тренировкам.
+2025-07-09 15:49:23,739 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/3
+2025-07-09 15:50:10,350 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:50:18,418 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:50:47,401 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:50:47,578 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 131 RUB, Mood: Утренняя домашняя теплотa со спешкой перешла в бодрый подъём после разговора с другом о хобби, лёгкое рабочее напряжение растворилось в уверенности благодаря помощи с математикой, спортивный азарт поднял эмоциональную планку ещё выше, а тёплый семейный вечер закрепил всё спокойным чувством близости и полезности.
+2025-07-09 15:50:47,578 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/3
+2025-07-09 15:51:45,477 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:51:56,236 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:52:33,406 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:52:33,701 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 150 RUB, Mood: День начал свой разбег от сонного, но тёплого домашнего комфорта к творческому порыву за монтажом, прошёл сквозь минутное волнение, обернувшееся уверенностью благодаря понятным замечаниям, принесёл благодарное облегчение, когда задача оказалась проще, и финишировал горделивой усталостью, приправленной семейной поддержкой, которая подхлестнула новую волну мотивации.
+2025-07-09 15:52:33,701 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 15:52:33,721 - transaction_simulator.life_simulator - INFO - Results saved to simulation_10_усманов_Айрат_конюхов_Владислав_23_04_25_18_00 - Айрат Усманов.m4a_20250709_155233.json
+2025-07-09 15:54:09,625 - transaction_simulator.life_simulator - INFO - Starting simulation for 11_Фушта Людмила_Степанова Екатерина_16.04.25_ 08.55​ - Lyudmila Fushta.aac
+2025-07-09 15:54:09,626 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 15:54:09,626 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 15:54:46,751 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:54:47,033 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 15:55:31,254 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:55:39,057 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:56:15,185 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:56:15,336 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 2725 RUB, Mood: Утреннее спокойствие, укреплённое поддержкой коллег, перелилось в бодрое удовлетворение от спасения ситуации, дальше расцвело радостным предвкушением семейного праздника, согрелось тёплой соседской взаимопомощью и к вечеру улеглось в мягкую ностальгическую радость встречи с прошлым.
+2025-07-09 15:56:15,336 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/5
+2025-07-09 15:56:57,978 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:57:14,695 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:57:55,860 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:57:55,885 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 2720 RUB, Mood: Тёплая уверенность, заданная поддержкой мужа и вниманием мамы, слегка напряглась под рабочим прессингом, но разгладилась шутками коллег, поднялась доверительной семейной близостью и к вечеру растворилась в спокойствии, которое подарило ощущение надёжного соседского плеча.
+2025-07-09 15:57:55,885 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/5
+2025-07-09 15:58:46,450 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:58:54,003 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:59:58,428 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 15:59:58,456 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 2776 RUB, Mood: Утреннее спокойствие в заботливой ауре мужа слегка дрогнуло от рабочего стресса, ожило искрой молодой коллеги, после обедовой напряжённости согрелось предвкушением семейного визита и, хоть вечерняя усталость накатила, растворилось в удовлетворённом чувстве полезности и соседской сплочённости.
+2025-07-09 15:59:58,456 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/5
+2025-07-09 15:59:58,456 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 16:00:35,317 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:00:45,411 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:01:24,457 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:01:24,470 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 2605 RUB, Mood: Утреннее ощущение надёжной уверенности, возникшее после совместного планирования, укрепилось короткой соседской взаимовыручкой, взмыло к гордому профессиональному подъёму после похвалы шефа, за обедом разлилось лёгкой поддержкой коллег и к вечеру согрелось тёплой заботой с предвкушением семейных выходных в разговоре с дочерью.
+2025-07-09 16:01:24,470 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/5
+2025-07-09 16:02:50,083 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:02:59,829 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:03:48,849 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:03:48,879 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 2784 RUB, Mood: Утреннее тепло и поддержка перешли в лёгкий рабочий стресс, смягчённый ощущением компетентности и разряженный коротким смехом, после чего день согрелся семейным уютом и соседской солидарностью, а под вечер поверх усталости вспыхнуло радостное предвкушение субботнего культурного выхода.
+2025-07-09 16:03:48,879 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 16:03:48,907 - transaction_simulator.life_simulator - INFO - Results saved to simulation_11_Фушта Людмила_Степанова Екатерина_16.04.25_ 08.55​ - Lyudmila Fushta.aac_20250709_160348.json
+2025-07-09 16:48:03,839 - transaction_simulator.life_simulator - INFO - Starting simulation for 11_Фушта Людмила_Степанова Екатерина_16.04.25_ 08.55​ - Lyudmila Fushta.aac
+2025-07-09 16:48:03,839 - transaction_simulator.life_simulator - INFO - Period: 5 days from 2024-01-01 00:00:00
+2025-07-09 16:48:03,839 - transaction_simulator.life_simulator - INFO - Generating social environment...
+2025-07-09 16:48:41,244 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:48:41,429 - transaction_simulator.life_simulator - INFO - 
+Simulating day 1/5
+2025-07-09 16:50:10,906 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:50:19,386 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:51:15,726 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:51:16,086 - transaction_simulator.life_simulator - INFO - Day 2024-01-01: Spent 2617 RUB, Mood: С утра было тепло и уютно, потом поддержали — стало бодрее и надежды больше, бюрократия чуть раздражила, но соседка помогла, и к вечеру опять стало спокойно и радостно.
+2025-07-09 16:51:16,086 - transaction_simulator.life_simulator - INFO - 
+Simulating day 2/5
+2025-07-09 16:52:29,040 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:52:35,548 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:54:58,376 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:54:58,400 - transaction_simulator.life_simulator - INFO - Day 2024-01-02: Spent 2488 RUB, Mood: С утра всё было обычно, потом поддержал и стало приятно, позже вдохновился, чуть раздражился, а к концу дня спокойно поговорили.
+2025-07-09 16:54:58,400 - transaction_simulator.life_simulator - INFO - 
+Simulating day 3/5
+2025-07-09 16:56:29,700 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:56:34,594 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:57:35,427 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:57:35,624 - transaction_simulator.life_simulator - INFO - Day 2024-01-03: Spent 2704 RUB, Mood: Сначала было приятно, потом чуть раздражался, позже поддержали, я вдохновился и к вечеру стало тепло и спокойно.
+2025-07-09 16:57:35,624 - transaction_simulator.life_simulator - INFO - 
+Simulating day 4/5
+2025-07-09 16:57:35,624 - transaction_simulator.life_simulator - INFO - Special event: день зарплаты
+2025-07-09 16:58:41,760 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:58:47,815 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:59:43,628 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 16:59:43,827 - transaction_simulator.life_simulator - INFO - Day 2024-01-04: Spent 2734 RUB, Mood: Сначала было приятно, потом поддержал и радовался, позже чуть раздражало, а к вечеру снова взбодрился.
+2025-07-09 16:59:43,827 - transaction_simulator.life_simulator - INFO - 
+Simulating day 5/5
+2025-07-09 17:00:41,795 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 17:00:53,378 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 17:01:50,503 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-09 17:01:50,529 - transaction_simulator.life_simulator - INFO - Day 2024-01-05: Spent 2315 RUB, Mood: С утра было обычно, потом стало приятно, после поддержал кого-то, чуть раздражался, а к вечеру снова приятно.
+2025-07-09 17:01:50,529 - transaction_simulator.life_simulator - INFO - 
+Analyzing results...
+2025-07-09 17:01:50,556 - transaction_simulator.life_simulator - INFO - Results saved to simulation_11_Фушта Людмила_Степанова Екатерина_16.04.25_ 08.55​ - Lyudmila Fushta.aac_20250709_170150.json

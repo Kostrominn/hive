@@ -169,8 +169,12 @@ def build_selection_prompt(topic: str, people: List[Person], number_of_people: i
     return f"{build_selection_prompt_prompt(number_of_people)}\n\n{header}\n{body}\n\nОтвет:"
 
 def build_vote_prompt(person: Person, candidates: List[str], history_snippet: str, context) -> str:
-    candidate_str = ", ".join(candidates)
-    print('candidate_str', candidate_str)
+    if isinstance(candidates[0], Person):
+        candidate_names = [p.name for p in candidates]
+    else:
+        candidate_names = candidates
+        
+    candidate_str = ", ".join(candidate_names)
     return build_vote_prompt_prompt(person, candidate_str, history_snippet, context)
 
 def build_distribution_prompt(person: Person, money: int, resources, context: str) -> str:

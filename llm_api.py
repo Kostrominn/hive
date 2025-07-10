@@ -5,6 +5,7 @@ from openai import OpenAI, AsyncOpenAI
 from typing import List, Dict
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 GEMINI_API_KEY = "AIzaSyBhEZ6y1lUvUkzcZnCKzqdMLWbmWf9F-Zs"
 
 os.environ['HTTP_PROXY'] = 'http://Pgt8x0:LW7zMg@163.198.133.232:8000'     # если нужен http-прокси
