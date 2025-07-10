@@ -1,6 +1,6 @@
 """Главный симулятор периода жизни"""
 
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Callable
 from datetime import datetime, timedelta
 import json
 import logging
@@ -85,8 +85,16 @@ class LifeTransactionSimulator:
             # - speech_profile
         }
     
-    async def run_simulation(self) -> Dict[str, Any]:
-        """Запускает полную симуляцию"""
+    async def run_simulation(
+        self,
+        progress_callback: Optional[Callable[[str, Any], None]] = None,
+    ) -> Dict[str, Any]:
+        """Запускает полную симуляцию.
+
+        Если передан ``progress_callback``, вызывает его после создания
+        социального окружения и после каждого симулированного дня.
+        ``progress_callback`` получает тип события и соответствующие данные.
+        """
         
         logger.info(f"Starting simulation for {self.person.name}")
         logger.info(f"Period: {self.config.days} days from {self.config.start_date}")
@@ -94,6 +102,14 @@ class LifeTransactionSimulator:
         # 1. Генерируем начальное социальное окружение
         logger.info("Generating social environment...")
         await self.social_environment.generate_initial_environment()
+        if progress_callback:
+            progress_callback(
+                "environment",
+                {
+                    "close_circle": self.social_environment.close_circle,
+                    "extended_circle": self.social_environment.extended_circle,
+                },
+            )
         
         # 2. Симулируем каждый день
         current_date = self.config.start_date
@@ -122,6 +138,8 @@ class LifeTransactionSimulator:
             )
             
             self.daily_results.append(daily_result)
+            if progress_callback:
+                progress_callback("day_result", daily_result)
             
             # Обновляем память
             self._update_memory(daily_result)
