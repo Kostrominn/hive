@@ -59,34 +59,40 @@ async def run_console_simulation(args):
         memory_window=5
     )
     
+    # Подготовка callback для лайв-вывода
+    def progress(event_type, data):
+        if event_type == "environment":
+            print("\n🔹 Социальное окружение:")
+            for p in data.get("close_circle", []):
+                print(f"  - {p['name']} ({p['relation']}, {p.get('age', '?')} лет)")
+            for p in data.get("extended_circle", []):
+                print(f"  - {p['name']} ({p['relation']}, {p.get('age', '?')} лет)")
+        elif event_type == "day_result":
+            from transaction_simulator.transaction_models import DailyResult
+            result = data if isinstance(data, DailyResult) else DailyResult(**data)
+
+            print(f"\n{'='*60}")
+            print(f"📅 {result.date} ({result.day_context.day_of_week})")
+            print(f"💰 Потрачено: {result.day_summary.total_spent} руб")
+            print(f"😊 Настроение: {result.day_summary.mood_trajectory[:100]}...")
+
+            print(f"\n👥 Социальные взаимодействия ({len(result.social_interactions)}):")
+            for si in result.social_interactions:
+                print(f"  - {si.with_person}: {si.context} ({si.emotional_impact})")
+                if args.show_chats:
+                    for msg in si.chat[:3]:
+                        print(f"    💬 {msg.from_person}: {msg.text}")
+
+            print(f"\n🛒 Покупки ({len(result.transactions)}):")
+            for t in result.transactions:
+                print(f"  - {t.time} {t.place}: {', '.join(t.items[:3])} - {t.amount} руб ({t.category})")
+
     # Запускаем симуляцию
     simulator = LifeTransactionSimulator(config, [person])
-    simulation_result = await simulator.run_simulation()
-    
+    simulation_result = await simulator.run_simulation(progress_callback=progress)
+
     # Извлекаем результаты
     results = simulation_result['daily_results']
-    
-    # Выводим результаты
-    for result_dict in results:
-        # Создаем объект из словаря
-        from transaction_simulator.transaction_models import DailyResult
-        result = DailyResult(**result_dict)
-        
-        print(f"\n{'='*60}")
-        print(f"📅 {result.date} ({result.day_context.day_of_week})")
-        print(f"💰 Потрачено: {result.day_summary.total_spent} руб")
-        print(f"😊 Настроение: {result.day_summary.mood_trajectory[:100]}...")
-        
-        print(f"\n👥 Социальные взаимодействия ({len(result.social_interactions)}):")
-        for si in result.social_interactions:
-            print(f"  - {si.with_person}: {si.context} ({si.emotional_impact})")
-            if args.show_chats:
-                for msg in si.chat[:3]:  # Показываем первые 3 сообщения
-                    print(f"    💬 {msg.from_person}: {msg.text}")
-        
-        print(f"\n🛒 Покупки ({len(result.transactions)}):")
-        for t in result.transactions:
-            print(f"  - {t.time} {t.place}: {', '.join(t.items[:3])} - {t.amount} руб ({t.category})")
     
     # Генерируем отчет
     if args.report:
