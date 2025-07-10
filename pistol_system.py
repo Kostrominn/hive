@@ -43,6 +43,25 @@ class PistolSystem:
     def is_enabled(self) -> bool:
         return self.enabled
 
+    def parse_pistol_request(self, person_name: str, text: str) -> bool:
+        """Very simple parser for a pistol request used in tests."""
+        if not self.enabled or self.available_pistols <= 0:
+            return False
+        if re.search(r"пистолет|мандат", text, re.IGNORECASE):
+            if person_name not in self.pistol_requests:
+                self.pistol_requests[person_name] = {"text": text}
+                return True
+        return False
+
+    def resolve_duel(self, duel: Dict[str, str]) -> str:
+        """Simplified duel resolution for tests."""
+        challenger = duel.get("challenger")
+        target = duel.get("target")
+        self.dead_players.update({challenger, target})
+        result = f"{challenger} убили {target} в дуэли"
+        self.duel_history.append({"challenger": challenger, "target": target, "result": result})
+        return result
+
     def announce_pistols(self, round_num: int) -> Optional[str]:
         """Объявление о появлении пистолетов"""
         if not self.enabled:

@@ -6,7 +6,7 @@
 import argparse
 import asyncio
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # Импортируем необходимые модули
@@ -18,18 +18,14 @@ from models import Person
 from transaction_simulator.life_simulator import LifeTransactionSimulator
 from transaction_simulator.transaction_models import SimulationConfig
 from transaction_simulator.report_generator import ReportGenerator
+from life_simulator_ui import app
 
 def run_web_interface():
     """Запускает веб-интерфейс"""
-    try:
-        from life_simulator_ui import app
-        print("🚀 Запускаем веб-интерфейс...")
-        print("📍 Откройте в браузере: http://localhost:5000")
-        print("🛑 Для остановки нажмите Ctrl+C")
-        app.run(debug=False, port=5000, host='0.0.0.0')
-    except ImportError:
-        print("❌ Не найден файл life_simulator_ui.py")
-        print("💡 Убедитесь, что файл находится в той же папке")
+    print("🚀 Запускаем веб-интерфейс...")
+    print("📍 Откройте в браузере: http://localhost:5000")
+    print("🛑 Для остановки нажмите Ctrl+C")
+    app.run(debug=False, port=5000, host="0.0.0.0")
 
 async def run_console_simulation(args):
     """Запускает симуляцию в консольном режиме"""
