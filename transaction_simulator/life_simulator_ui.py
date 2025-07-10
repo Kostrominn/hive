@@ -6,7 +6,7 @@
 import argparse
 import asyncio
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # Импортируем необходимые модули
@@ -18,18 +18,76 @@ from models import Person
 from transaction_simulator.life_simulator import LifeTransactionSimulator
 from transaction_simulator.transaction_models import SimulationConfig
 from transaction_simulator.report_generator import ReportGenerator
+from flask import Flask, render_template_string, request, jsonify
+
+app = Flask(__name__)
+
+FORM_HTML = """
+<!doctype html>
+<title>Life Simulator</title>
+<h1>Life Transaction Simulator</h1>
+<form method=post action="/simulate">
+  Имя: <input name=name value="Александр Петров"><br>
+  Возраст: <input type=number name=age value=28><br>
+  Пол:
+  <select name=gender>
+    <option value="мужчина">мужчина</option>
+    <option value="женщина">женщина</option>
+  </select><br>
+  Профессия: <input name=profession value="менеджер"><br>
+  Доход:
+  <select name=income>
+    <option value="низкий">низкий</option>
+    <option value="средний" selected>средний</option>
+    <option value="высокий">высокий</option>
+  </select><br>
+  Дней симуляции: <input type=number name=days value=3><br>
+  <input type=submit value="Старт">
+</form>
+"""
 
 def run_web_interface():
     """Запускает веб-интерфейс"""
-    try:
-        from life_simulator_ui import app
-        print("🚀 Запускаем веб-интерфейс...")
-        print("📍 Откройте в браузере: http://localhost:5000")
-        print("🛑 Для остановки нажмите Ctrl+C")
-        app.run(debug=False, port=5000, host='0.0.0.0')
-    except ImportError:
-        print("❌ Не найден файл life_simulator_ui.py")
-        print("💡 Убедитесь, что файл находится в той же папке")
+    print("🚀 Запускаем веб-интерфейс...")
+    print("📍 Откройте в браузере: http://localhost:5000")
+    print("🛑 Для остановки нажмите Ctrl+C")
+    app.run(debug=False, port=5000, host="0.0.0.0")
+
+
+@app.route("/")
+def index() -> str:
+    """Вывод простой формы для запуска симуляции"""
+    return render_template_string(FORM_HTML)
+
+
+@app.route("/simulate", methods=["POST"])
+def simulate_route():
+    """Запускает симуляцию и возвращает результат"""
+    person = Person(
+        name=request.form.get("name", "Александр Петров"),
+        age=int(request.form.get("age", 28)),
+        gender=request.form.get("gender", "мужчина"),
+        profession=request.form.get("profession", "менеджер"),
+        income_level=request.form.get("income", "средний"),
+        family_status="не женат",
+        children=0,
+        region="Москва",
+        city_type="мегаполис",
+        interests=[],
+        personality_traits=[],
+    )
+    days = int(request.form.get("days", 3))
+    start_date = datetime.now() - timedelta(days=days - 1)
+    config = SimulationConfig(
+        target_person_id=person.id,
+        start_date=start_date,
+        days=days,
+        memory_window=5,
+    )
+
+    simulator = LifeTransactionSimulator(config, [person])
+    simulation_result = asyncio.run(simulator.run_simulation())
+    return jsonify(simulation_result)
 
 async def run_console_simulation(args):
     """Запускает симуляцию в консольном режиме"""
