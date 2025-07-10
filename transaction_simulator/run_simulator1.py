@@ -23,9 +23,9 @@ from life_simulator_ui import app
 def run_web_interface():
     """Запускает веб-интерфейс"""
     print("🚀 Запускаем веб-интерфейс...")
-    print("📍 Откройте в браузере: http://localhost:5000")
+    print("📍 Откройте в браузере: http://localhost:5001")
     print("🛑 Для остановки нажмите Ctrl+C")
-    app.run(debug=False, port=5000, host="0.0.0.0")
+    app.run(debug=False, port=5001, host="0.0.0.0")
 
 async def run_console_simulation(args):
     """Запускает симуляцию в консольном режиме"""
