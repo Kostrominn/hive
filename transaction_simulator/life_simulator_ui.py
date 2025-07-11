@@ -26,7 +26,7 @@ import queue
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 
-FORM_HTML = """
+FORM_HTML = r"""
 <!doctype html>
 <title>Life Simulator</title>
 <h1>Life Transaction Simulator</h1>
@@ -67,9 +67,20 @@ document.getElementById('simForm').addEventListener('submit', function(e){
         out.textContent += `  - ${p.name} (${p.relation}, ${p.age ?? '?'} лет)\n`;
       });
     }else if(msg.event === 'day_result'){
-      out.textContent += `\n==============================\n\uD83D\uDCC5 ${msg.data.date} (${msg.data.day_context.day_of_week})\n`;
-      out.textContent += `\uD83D\uDCB0 Потрачено: ${msg.data.day_summary.total_spent} руб\n`;
-      out.textContent += `\uD83D\uDE0A Настроение: ${msg.data.day_summary.mood_trajectory.slice(0,100)}...\n`;
+        out.textContent += `\n==============================\n\uD83D\uDCC5 ${msg.data.date} (${msg.data.day_context.day_of_week})\n`;
+        out.textContent += `\uD83D\uDCB0 Потрачено: ${msg.data.day_summary.total_spent} руб\n`;
+        out.textContent += `\uD83D\uDE0A Настроение: ${msg.data.day_summary.mood_trajectory.slice(0,100)}...\n`;
+        msg.data.social_interactions.forEach(function(si){
+        si.chat.forEach(function(c){
+          out.textContent += `\uD83D\uDCAC ${c.from_person}: ${c.text}\n`;
+        });
+        msg.data.social_interactions.forEach(function(si){
+        si.chat.forEach(function(c){
+          out.textContent += `\uD83D\uDCAC ${c.from_person}: ${c.text}\n`;
+        });
+      });
+      });
+  });    
     }else if(msg.event === 'complete'){
       out.textContent += '\n\u2705 Симуляция завершена';
       es.close();
@@ -149,12 +160,27 @@ def simulate_stream_route():
     simulator = LifeTransactionSimulator(config, [person])
     q = queue.Queue()
 
+    def _json_safe(obj):
+        return json.loads(json.dumps(obj, default=str, ensure_ascii=False))
+
     def progress(event_type, data):
+        """Queue progress updates ensuring JSON-friendly payloads."""
+        if hasattr(data, "json"):
+            data = json.loads(data.json())
+        elif hasattr(data, "dict"):
+            data = data.dict()
+        data = _json_safe(data)
         q.put({"event": event_type, "data": data})
 
     async def run():
         result = await simulator.run_simulation(progress_callback=progress)
+        if hasattr(result, "json"):
+            result = json.loads(result.json())
+        elif hasattr(result, "dict"):
+            result = result.dict()
+        result = _json_safe(result)
         q.put({"event": "complete", "data": result})
+
 
     threading.Thread(target=lambda: asyncio.run(run()), daemon=True).start()
 
