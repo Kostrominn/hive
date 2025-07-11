@@ -25,69 +25,271 @@ import queue
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # Отключаем кеш для разработки
 
-FORM_HTML = r"""
-<!doctype html>
-<title>Life Simulator</title>
-<h1>Life Transaction Simulator</h1>
-<form id="simForm">
-  Имя: <input name=name value="Александр Петров"><br>
-  Возраст: <input type=number name=age value=28><br>
-  Пол:
-  <select name=gender>
-    <option value="мужчина">мужчина</option>
-    <option value="женщина">женщина</option>
-  </select><br>
-  Профессия: <input name=profession value="менеджер"><br>
-  Доход:
-  <select name=income>
-    <option value="низкий">низкий</option>
-    <option value="средний" selected>средний</option>
-    <option value="высокий">высокий</option>
-  </select><br>
-  Дней симуляции: <input type=number name=days value=3><br>
-  <input type=submit value="Старт">
-</form>
-<pre id="output"></pre>
+FORM_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Life Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-row {
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 140px;
+            margin-right: 10px;
+        }
+        input, select {
+            margin: 5px 0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        input[type="submit"] {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            width: auto;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        #output {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌟 Life Transaction Simulator</h1>
+    <form id="simForm">
+        <div class="form-row">
+            <label>Имя:</label>
+            <input type="text" name="name" value="Александр Петров" required>
+        </div>
+        <div class="form-row">
+            <label>Возраст:</label>
+            <input type="number" name="age" value="28" min="14" max="80" required>
+        </div>
+        <div class="form-row">
+            <label>Пол:</label>
+            <select name="gender">
+                <option value="мужчина">мужчина</option>
+                <option value="женщина">женщина</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>Профессия:</label>
+            <input type="text" name="profession" value="менеджер" required>
+        </div>
+        <div class="form-row">
+            <label>Доход:</label>
+            <select name="income">
+                <option value="низкий">низкий</option>
+                <option value="средний" selected>средний</option>
+                <option value="высокий">высокий</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>Дней симуляции:</label>
+            <input type="number" name="days" value="3" min="1" max="30" required>
+        </div>
+        <div class="form-row">
+            <input type="submit" value="🚀 Запустить симуляцию">
+        </div>
+    </form>
+    <pre id="output"></pre>
+
 <script>
-document.getElementById('simForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const params = new URLSearchParams(new FormData(e.target));
-  const out = document.getElementById('output');
-  out.textContent = '';
-  const es = new EventSource('/simulate_stream?' + params.toString());
-  es.onmessage = function(ev){
-    const msg = JSON.parse(ev.data);
-    if(msg.event === 'environment'){
-      out.textContent += '\n\uD83D\uDD39 Социальное окружение:\n';
-      msg.data.close_circle.forEach(function(p){
-        out.textContent += `  - ${p.name} (${p.relation}, ${p.age ?? '?'} лет)\n`;
-      });
-      msg.data.extended_circle.forEach(function(p){
-        out.textContent += `  - ${p.name} (${p.relation}, ${p.age ?? '?'} лет)\n`;
-      });
-    }else if(msg.event === 'day_result'){
-        out.textContent += `\n==============================\n\uD83D\uDCC5 ${msg.data.date} (${msg.data.day_context.day_of_week})\n`;
-        out.textContent += `\uD83D\uDCB0 Потрачено: ${msg.data.day_summary.total_spent} руб\n`;
-        out.textContent += `\uD83D\uDE0A Настроение: ${msg.data.day_summary.mood_trajectory.slice(0,100)}...\n`;
-        msg.data.social_interactions.forEach(function(si){
-        si.chat.forEach(function(c){
-          out.textContent += `\uD83D\uDCAC ${c.from_person}: ${c.text}\n`;
+(function() {
+    'use strict';
+    
+    // Ждём загрузки DOM
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing form handler');
+        
+        const form = document.getElementById('simForm');
+        const output = document.getElementById('output');
+        
+        if (!form) {
+            console.error('Form not found!');
+            return;
+        }
+        
+        form.addEventListener('submit', function(e) {
+            console.log('Form submitted');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Собираем данные формы
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+            
+            // Очищаем вывод
+            output.textContent = '⏳ Запускаем симуляцию...\\n';
+            output.className = 'loading';
+            
+            // Создаём EventSource
+            const url = '/simulate_stream?' + params.toString();
+            console.log('Connecting to:', url);
+            
+            const eventSource = new EventSource(url);
+            
+            eventSource.onopen = function() {
+                console.log('EventSource connected');
+                output.className = '';
+            };
+            
+            eventSource.onmessage = function(event) {
+                console.log('Received event:', event.data.substring(0, 100) + '...');
+                
+                try {
+                    const msg = JSON.parse(event.data);
+                    
+                    if (msg.event === 'environment') {
+                        output.textContent += '\\n🔹 Социальное окружение:\\n';
+                        
+                        if (msg.data.close_circle && msg.data.close_circle.length > 0) {
+                            output.textContent += '\\n📍 Близкий круг:\\n';
+                            msg.data.close_circle.forEach(function(p) {
+                                output.textContent += '  • ' + p.name + ' (' + p.relation + ', ' + (p.age || '?') + ' лет)';
+                                if (p.description) {
+                                    output.textContent += ' - ' + p.description;
+                                }
+                                output.textContent += '\\n';
+                            });
+                        }
+                        
+                        if (msg.data.extended_circle && msg.data.extended_circle.length > 0) {
+                            output.textContent += '\\n👥 Расширенный круг:\\n';
+                            msg.data.extended_circle.forEach(function(p) {
+                                output.textContent += '  • ' + p.name + ' (' + p.relation + ', ' + (p.age || '?') + ' лет)';
+                                if (p.description) {
+                                    output.textContent += ' - ' + p.description;
+                                }
+                                output.textContent += '\\n';
+                            });
+                        }
+                        
+                    } else if (msg.event === 'day_result') {
+                        output.textContent += '\\n==============================\\n';
+                        output.textContent += '📅 ' + msg.data.date + ' (' + msg.data.day_context.day_of_week + ')\\n';
+                        output.textContent += '💰 Потрачено: ' + Math.round(msg.data.day_summary.total_spent) + ' руб\\n';
+                        output.textContent += '😊 Настроение: ' + msg.data.day_summary.mood_trajectory + '\\n';
+                        
+                        // Социальные взаимодействия
+                        if (msg.data.social_interactions && msg.data.social_interactions.length > 0) {
+                            output.textContent += '\\n👥 Социальные взаимодействия:\\n';
+                            msg.data.social_interactions.forEach(function(si) {
+                                output.textContent += '  • ' + si.with_person + ': ' + si.context + ' (' + si.emotional_impact + ')\\n';
+                                
+                                // Показываем несколько сообщений из чата
+                                if (si.chat && si.chat.length > 0) {
+                                    const maxMessages = Math.min(2, si.chat.length);
+                                    for (let i = 0; i < maxMessages; i++) {
+                                        const c = si.chat[i];
+                                        output.textContent += '    💬 ' + c.from_person + ': ' + c.text + '\\n';
+                                    }
+                                    if (si.chat.length > 2) {
+                                        output.textContent += '    ... (ещё ' + (si.chat.length - 2) + ' сообщений)\\n';
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Покупки
+                        if (msg.data.transactions && msg.data.transactions.length > 0) {
+                            output.textContent += '\\n🛒 Покупки:\\n';
+                            msg.data.transactions.forEach(function(t) {
+                                const itemsPreview = t.items.slice(0, 3).join(', ');
+                                const moreItems = t.items.length > 3 ? ' и ещё ' + (t.items.length - 3) : '';
+                                output.textContent += '  • ' + t.time + ' ' + t.place + ': ' + itemsPreview + moreItems + ' - ' + Math.round(t.amount) + ' руб (' + t.category + ')\\n';
+                            });
+                        }
+                        
+                        // Ключевые моменты
+                        if (msg.data.day_summary.key_moments && msg.data.day_summary.key_moments.length > 0) {
+                            output.textContent += '\\n✨ Ключевые моменты:\\n';
+                            msg.data.day_summary.key_moments.forEach(function(moment) {
+                                output.textContent += '  • ' + moment + '\\n';
+                            });
+                        }
+                        
+                    } else if (msg.event === 'complete') {
+                        output.textContent += '\\n\\n✅ Симуляция завершена!\\n';
+                        
+                        // Краткая аналитика
+                        if (msg.data.analysis && msg.data.analysis.insights) {
+                            output.textContent += '\\n📊 Ключевые выводы:\\n';
+                            msg.data.analysis.insights.forEach(function(insight) {
+                                output.textContent += '  • ' + insight + '\\n';
+                            });
+                        }
+                        
+                        eventSource.close();
+                        console.log('Simulation completed, closing connection');
+                    }
+                    
+                    // Прокручиваем вниз
+                    output.scrollTop = output.scrollHeight;
+                    
+                } catch (error) {
+                    console.error('Error parsing message:', error);
+                    output.textContent += '\\n❌ Ошибка обработки данных: ' + error.message + '\\n';
+                }
+            };
+            
+            eventSource.onerror = function(error) {
+                console.error('EventSource error:', error);
+                output.textContent += '\\n❌ Ошибка соединения. Проверьте консоль для деталей.\\n';
+                eventSource.close();
+            };
+            
+            return false;
         });
-        msg.data.social_interactions.forEach(function(si){
-        si.chat.forEach(function(c){
-          out.textContent += `\uD83D\uDCAC ${c.from_person}: ${c.text}\n`;
-        });
-      });
-      });
-  });    
-    }else if(msg.event === 'complete'){
-      out.textContent += '\n\u2705 Симуляция завершена';
-      es.close();
-    }
-  };
-});
+    });
+})();
 </script>
+
+</body>
+</html>
 """
 
 def run_web_interface():
@@ -136,6 +338,7 @@ def simulate_route():
 @app.route("/simulate_stream")
 def simulate_stream_route():
     """Запускает симуляцию и стримит прогресс через SSE"""
+    # Создаём персонажа
     person = Person(
         id=str(uuid4()),
         name=request.args.get("name", "Александр Петров"),
@@ -148,6 +351,7 @@ def simulate_stream_route():
         region="Москва",
         city_type="мегаполис",
     )
+    
     days = int(request.args.get("days", 3))
     start_date = datetime.now() - timedelta(days=days - 1)
     config = SimulationConfig(
@@ -161,37 +365,64 @@ def simulate_stream_route():
     q = queue.Queue()
 
     def _json_safe(obj):
+        """Безопасная сериализация в JSON"""
         return json.loads(json.dumps(obj, default=str, ensure_ascii=False))
 
     def progress(event_type, data):
-        """Queue progress updates ensuring JSON-friendly payloads."""
+        """Callback для прогресса симуляции"""
+        print(f"Progress event: {event_type}")  # Для отладки
+        
+        # Конвертируем данные в JSON-safe формат
         if hasattr(data, "json"):
             data = json.loads(data.json())
         elif hasattr(data, "dict"):
             data = data.dict()
+        
         data = _json_safe(data)
         q.put({"event": event_type, "data": data})
 
     async def run():
-        result = await simulator.run_simulation(progress_callback=progress)
-        if hasattr(result, "json"):
-            result = json.loads(result.json())
-        elif hasattr(result, "dict"):
-            result = result.dict()
-        result = _json_safe(result)
-        q.put({"event": "complete", "data": result})
+        """Запуск симуляции в отдельном потоке"""
+        try:
+            result = await simulator.run_simulation(progress_callback=progress)
+            
+            # Конвертируем результат
+            if hasattr(result, "json"):
+                result = json.loads(result.json())
+            elif hasattr(result, "dict"):
+                result = result.dict()
+            
+            result = _json_safe(result)
+            q.put({"event": "complete", "data": result})
+        except Exception as e:
+            print(f"Error in simulation: {e}")
+            import traceback
+            traceback.print_exc()
+            q.put({"event": "error", "data": {"message": str(e)}})
 
-
+    # Запускаем симуляцию в отдельном потоке
     threading.Thread(target=lambda: asyncio.run(run()), daemon=True).start()
 
     def generate():
+        """Генератор SSE событий"""
         while True:
-            item = q.get()
-            yield f"data: {json.dumps(item, ensure_ascii=False)}\n\n"
-            if item["event"] == "complete":
-                break
+            try:
+                item = q.get(timeout=30)  # Таймаут 30 секунд
+                yield f"data: {json.dumps(item, ensure_ascii=False)}\n\n"
+                if item["event"] in ["complete", "error"]:
+                    break
+            except queue.Empty:
+                # Отправляем heartbeat для поддержания соединения
+                yield f"data: {json.dumps({'event': 'heartbeat'})}\n\n"
 
-    return Response(stream_with_context(generate()), mimetype="text/event-stream")
+    return Response(
+        stream_with_context(generate()), 
+        mimetype="text/event-stream",
+        headers={
+            'Cache-Control': 'no-cache',
+            'X-Accel-Buffering': 'no'  # Для nginx
+        }
+    )
 
 async def run_console_simulation(args):
     """Запускает симуляцию в консольном режиме"""
