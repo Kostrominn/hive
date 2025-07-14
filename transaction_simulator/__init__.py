@@ -4,7 +4,7 @@ Transaction Simulator - симулятор повседневных трат с 
 
 from .transaction_models import Transaction, DailyResult, SocialInteraction
 from .life_simulator import LifeTransactionSimulator
-from .report_generator import ReportGenerator
+from .report_generator import ReportGenerator, EnhancedReportGenerator
 
 __version__ = "0.1.0"
 __all__ = [
@@ -13,4 +13,5 @@ __all__ = [
     "SocialInteraction",
     "LifeTransactionSimulator",
     "ReportGenerator",
+    "EnhancedReportGenerator",
 ]

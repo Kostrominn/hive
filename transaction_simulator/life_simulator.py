@@ -13,7 +13,8 @@ from models import Person
 from .transaction_models import SimulationConfig, MemoryContext, DailyResult
 from .social_manager import SocialEnvironment
 from .daily_simulator import DailyLifeSimulator
-from .analyzer import ImprovedSimulationAnalyzer 
+from .analyzer import AdvancedSimulationAnalyzer
+from .report_generator import EnhancedReportGenerator
 
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,8 @@ class LifeTransactionSimulator:
             self.person, 
             self.social_environment
         )
-        self.analyzer = ImprovedSimulationAnalyzer()
+        self.analyzer = AdvancedSimulationAnalyzer()
+        self.report_generator = EnhancedReportGenerator(self.person)
         
         # Результаты
         self.daily_results: List[DailyResult] = []
@@ -153,9 +155,9 @@ class LifeTransactionSimulator:
             
             current_date += timedelta(days=1)
         
-        # 3. Анализируем результаты (этот код остается без изменений)
-        logger.info("\nAnalyzing results...")
-        analysis = self.analyzer.analyze_simulation(
+        # 3. Генерируем комплексную аналитику
+        logger.info("\nGenerating comprehensive analysis...")
+        analysis = self.analyzer.generate_comprehensive_report(
             self.daily_results,
             self.person,
             self.config
@@ -240,6 +242,12 @@ class LifeTransactionSimulator:
     def save_results(self, filename: str):
         """Сохраняет результаты с улучшенной аналитикой"""
         
+        comprehensive_analysis = self.analyzer.generate_comprehensive_report(
+            self.daily_results,
+            self.person,
+            self.config
+        )
+
         results = {
             "metadata": {
                 "simulation_date": datetime.now().isoformat(),
@@ -254,10 +262,17 @@ class LifeTransactionSimulator:
                 "extended_circle": self.social_environment.extended_circle
             },
             "daily_results": [r.dict() for r in self.daily_results],
-            "summary": self.analyzer.generate_summary(self.daily_results)  # Улучшенная сводка
+            "comprehensive_analysis": comprehensive_analysis
         }
         
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(results, f, ensure_ascii=False, indent=2, default=str)
         
         logger.info(f"Results saved to {filename}")
+    def generate_detailed_report(self) -> str:
+        """Генерирует детальный человеко-читаемый отчет"""
+        return self.report_generator.generate_detailed_report(self.daily_results)
+
+    def generate_executive_summary(self) -> str:
+        """Генерирует краткое резюме для руководства"""
+        return self.report_generator.generate_executive_summary(self.daily_results)
