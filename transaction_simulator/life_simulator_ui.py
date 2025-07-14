@@ -14,7 +14,8 @@ import sys
 # Добавляем родительскую папку (на уровень выше) в путь поиска
 sys.path.append(str(Path(__file__).parent.parent))
 
-from models import Person
+from models import Person, HistoryEvent
+from profiles_loader import try_parse_json
 from uuid import uuid4
 from transaction_simulator.life_simulator import LifeTransactionSimulator
 from transaction_simulator.transaction_models import SimulationConfig
@@ -126,6 +127,66 @@ FORM_HTML = """
                 <option value="средний" selected>средний</option>
                 <option value="высокий">высокий</option>
             </select>
+        </div>
+        <div class="form-row">
+            <label>Образование:</label>
+            <input type="text" name="education">
+        </div>
+        <div class="form-row">
+            <label>Занятость:</label>
+            <input type="text" name="employment">
+        </div>
+        <div class="form-row">
+            <label>Религия:</label>
+            <input type="text" name="religion">
+        </div>
+        <div class="form-row">
+            <label>Идеология:</label>
+            <input type="text" name="ideology">
+        </div>
+        <div class="form-row">
+            <label>Цифровая грамотность:</label>
+            <input type="text" name="digital_literacy">
+        </div>
+        <div class="form-row">
+            <label>Доверие государству:</label>
+            <input type="text" name="state_trust">
+        </div>
+        <div class="form-row">
+            <label>Доверие СМИ:</label>
+            <input type="text" name="media_trust">
+        </div>
+        <div class="form-row">
+            <label>Контекст:</label>
+            <input type="text" name="context">
+        </div>
+        <div class="form-row">
+            <label>Когнитивная рамка:</label>
+            <textarea name="cognitive_frame" placeholder="можно оставить пустым"></textarea>
+        </div>
+        <div class="form-row">
+            <label>Риторическая манера:</label>
+            <textarea name="rhetorical_manner" placeholder="можно оставить пустым"></textarea>
+        </div>
+        <div class="form-row">
+            <label>Триггерные точки:</label>
+            <input type="text" name="trigger_points" placeholder="список через запятую">
+        </div>
+        <div class="form-row">
+            <label>Искажения восприятия:</label>
+            <textarea name="interpretation_biases" placeholder="можно оставить пустым"></textarea>
+        </div>
+        <div class="form-row">
+            <label>Взгляд на себя:</label>
+            <textarea name="meta_self_view" placeholder="можно оставить пустым"></textarea>
+        </div>
+        <div class="form-row">
+            <label>Речевой профиль:</label>
+            <textarea name="speech_profile" placeholder="можно оставить пустым"></textarea>
+        </div>
+        <div class="form-row">
+            <label>История (JSON):</label>
+            <textarea name="full_history" placeholder="можно оставить пустым"></textarea>
         </div>
         <div class="form-row">
             <label>Дней симуляции:</label>
@@ -324,6 +385,25 @@ def simulate_route():
         children=0,
         region="Москва",
         city_type="мегаполис",
+        education=request.form.get("education"),
+        employment=request.form.get("employment"),
+        religion=request.form.get("religion"),
+        ideology=request.form.get("ideology"),
+        digital_literacy=request.form.get("digital_literacy"),
+        state_trust=request.form.get("state_trust"),
+        media_trust=request.form.get("media_trust"),
+        context=request.form.get("context"),
+        cognitive_frame=try_parse_json(request.form.get("cognitive_frame")),
+        rhetorical_manner=try_parse_json(request.form.get("rhetorical_manner")),
+        trigger_points=(
+            try_parse_json(request.form.get("trigger_points"))
+            if request.form.get("trigger_points", "").strip().startswith("[")
+            else [tp.strip() for tp in request.form.get("trigger_points", "").split(",") if tp.strip()] if request.form.get("trigger_points") else None
+        ),
+        interpretation_biases=try_parse_json(request.form.get("interpretation_biases")),
+        meta_self_view=try_parse_json(request.form.get("meta_self_view")),
+        speech_profile=try_parse_json(request.form.get("speech_profile")),
+        full_history=[HistoryEvent(**ev) for ev in try_parse_json(request.form.get("full_history")) or []] if request.form.get("full_history") else None,
     )
     days = int(request.form.get("days", 3))
     sd = request.form.get("start_date")
@@ -358,6 +438,25 @@ def simulate_stream_route():
         children=0,
         region="Москва",
         city_type="мегаполис",
+        education=request.args.get("education"),
+        employment=request.args.get("employment"),
+        religion=request.args.get("religion"),
+        ideology=request.args.get("ideology"),
+        digital_literacy=request.args.get("digital_literacy"),
+        state_trust=request.args.get("state_trust"),
+        media_trust=request.args.get("media_trust"),
+        context=request.args.get("context"),
+        cognitive_frame=try_parse_json(request.args.get("cognitive_frame")),
+        rhetorical_manner=try_parse_json(request.args.get("rhetorical_manner")),
+        trigger_points=(
+            try_parse_json(request.args.get("trigger_points"))
+            if request.args.get("trigger_points", "").strip().startswith("[")
+            else [tp.strip() for tp in request.args.get("trigger_points", "").split(",") if tp.strip()] if request.args.get("trigger_points") else None
+        ),
+        interpretation_biases=try_parse_json(request.args.get("interpretation_biases")),
+        meta_self_view=try_parse_json(request.args.get("meta_self_view")),
+        speech_profile=try_parse_json(request.args.get("speech_profile")),
+        full_history=[HistoryEvent(**ev) for ev in try_parse_json(request.args.get("full_history")) or []] if request.args.get("full_history") else None,
     )
     
     days = int(request.args.get("days", 3))
@@ -450,6 +549,25 @@ async def run_console_simulation(args):
         children=args.children,
         region=args.region,
         city_type=args.city_type,
+        education=args.education,
+        employment=args.employment,
+        religion=args.religion,
+        ideology=args.ideology,
+        digital_literacy=args.digital_literacy,
+        state_trust=args.state_trust,
+        media_trust=args.media_trust,
+        context=args.context,
+        cognitive_frame=try_parse_json(args.cognitive_frame),
+        rhetorical_manner=try_parse_json(args.rhetorical_manner),
+        trigger_points=(
+            try_parse_json(args.trigger_points)
+            if args.trigger_points and args.trigger_points.strip().startswith("[")
+            else [tp.strip() for tp in args.trigger_points.split(",") if tp.strip()] if args.trigger_points else None
+        ),
+        interpretation_biases=try_parse_json(args.interpretation_biases),
+        meta_self_view=try_parse_json(args.meta_self_view),
+        speech_profile=try_parse_json(args.speech_profile),
+        full_history=[HistoryEvent(**ev) for ev in try_parse_json(args.full_history) or []] if args.full_history else None,
     )
     
     print(f"\n👤 Персонаж: {person.name}, {person.age} лет, {person.profession}")
@@ -598,6 +716,31 @@ def main():
                        help='Интересы через запятую')
     parser.add_argument('--traits', default='',
                        help='Черты характера через запятую')
+    parser.add_argument('--education', help='Образование')
+    parser.add_argument('--employment', help='Занятость')
+    parser.add_argument('--religion', help='Религия')
+    parser.add_argument('--ideology', help='Идеологические взгляды')
+    parser.add_argument('--digital-literacy', dest='digital_literacy',
+                       help='Цифровая грамотность')
+    parser.add_argument('--state-trust', dest='state_trust',
+                       help='Доверие государству')
+    parser.add_argument('--media-trust', dest='media_trust',
+                       help='Доверие СМИ')
+    parser.add_argument('--context', help='Бытовой контекст')
+    parser.add_argument('--cognitive-frame', dest='cognitive_frame',
+                       help='Когнитивная рамка (JSON)')
+    parser.add_argument('--rhetorical-manner', dest='rhetorical_manner',
+                       help='Риторическая манера (JSON)')
+    parser.add_argument('--trigger-points', dest='trigger_points',
+                       help='Триггерные точки (JSON или список через запятую)')
+    parser.add_argument('--interpretation-biases', dest='interpretation_biases',
+                       help='Искажения восприятия (JSON)')
+    parser.add_argument('--meta-self-view', dest='meta_self_view',
+                       help='Взгляд на себя (JSON)')
+    parser.add_argument('--speech-profile', dest='speech_profile',
+                       help='Речевой профиль (JSON)')
+    parser.add_argument('--full-history', dest='full_history',
+                       help='История персонажа (JSON список событий)')
     
     # Параметры симуляции
     parser.add_argument('--days', type=int, default=3,
