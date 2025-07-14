@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
 from collections import defaultdict, Counter
+import json
 
 from pathlib import Path
 import sys
@@ -8,6 +9,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from models import Person
 from .transaction_models import DailyResult, SimulationConfig, Transaction, SocialInteraction
 from .analyzer import CategoryNormalizer
+from llm_api import call_openai
 
 
 class BehavioralPatternAnalyzer:
@@ -64,7 +66,9 @@ class TargetedAdvertisingRecommender:
     """Very simplified advertising recommender"""
 
     def generate_ad_recommendations(self, behavioral: Dict[str, Any], spending: Dict[str, Any], person: Person) -> Dict[str, Any]:
-        return {
+        """Call LLM to propose advertising ideas based on spending analysis."""
+
+        default = {
             'immediate_opportunities': [],
             'product_recommendations': {},
             'optimal_ad_timing': {},
@@ -73,6 +77,30 @@ class TargetedAdvertisingRecommender:
             'budget_recommendations': {},
             'competitor_opportunities': [],
         }
+
+        categories = spending.get('category_deep_dive', {})
+        top = sorted(categories.items(), key=lambda x: x[1].get('total', 0), reverse=True)[:3]
+        cat_summary = "; ".join(f"{c}:{d.get('total',0):.0f}р" for c, d in top)
+
+        prompt = (
+            "Сформируй краткие рекомендации по таргетированной рекламе. "
+            f"Профиль: {person.gender}, {person.age} лет, регион {person.region}. "
+            f"Тип жизни: {behavioral.get('lifestyle_type','не указан')}. "
+            f"Траты: {cat_summary}. "
+            "Верни JSON c ключами: immediate_opportunities, product_recommendations, "
+            "optimal_ad_timing, messaging_strategy, channel_recommendations, "
+            "budget_recommendations, competitor_opportunities."
+        )
+
+        raw = call_openai([{"role": "user", "content": prompt}])
+        try:
+            data = json.loads(raw)
+        except Exception:
+            return default
+
+        if isinstance(data, dict):
+            default.update(data)
+        return default
 
 
 class AdvancedSimulationAnalyzer:
@@ -164,23 +192,65 @@ class AdvancedSimulationAnalyzer:
         }
 
     def _generate_predictions(self, behavioral: Dict[str, Any], spending: Dict[str, Any], person: Person) -> Dict[str, Any]:
-        daily_avg = spending.get('category_deep_dive', {}).get('еда', {}).get('average', 0)
-        return {
-            'next_month_spending': {
-                'predicted_amount': daily_avg * 30,
-                'confidence': 'низкая',
-            },
+        """Use LLM to forecast future behaviour and spending."""
+
+        default = {
+            'next_month_spending': {},
             'likely_major_purchases': [],
             'churn_risk': {},
             'upsell_probability': {},
             'lifestyle_changes': [],
         }
 
+        categories = spending.get('category_deep_dive', {})
+        top = sorted(categories.items(), key=lambda x: x[1].get('total', 0), reverse=True)[:3]
+        cat_summary = "; ".join(f"{c}:{d.get('total',0):.0f}р" for c, d in top)
+
+        prompt = (
+            "Сделай краткий прогноз финансового поведения на основе данных. "
+            f"Возраст {person.age}, доход {person.income_level}. "
+            f"Тип жизни {behavioral.get('lifestyle_type')}. "
+            f"Основные траты: {cat_summary}. "
+            "Верни JSON с ключами next_month_spending, likely_major_purchases, "
+            "churn_risk, upsell_probability, lifestyle_changes."
+        )
+
+        raw = call_openai([{"role": "user", "content": prompt}])
+        try:
+            data = json.loads(raw)
+        except Exception:
+            return default
+
+        if isinstance(data, dict):
+            default.update(data)
+        return default
+
     def _extract_key_insights(self, behavioral: Dict[str, Any], spending: Dict[str, Any], social: Dict[str, Any], person: Person) -> List[Dict[str, Any]]:
-        insights = []
+        """Ask LLM to highlight important observations."""
+
+        categories = spending.get('category_deep_dive', {})
+        top = sorted(categories.items(), key=lambda x: x[1].get('total', 0), reverse=True)[:3]
+        cat_summary = "; ".join(f"{c}:{d.get('total',0):.0f}р" for c, d in top)
+
+        prompt = (
+            "Выведи 3-5 ключевых инсайтов из поведения и трат. "
+            f"Тип жизни {behavioral.get('lifestyle_type')}. "
+            f"Траты: {cat_summary}. "
+            "Формат ответа: JSON список объектов с полями type, insight, details, recommendation."
+        )
+
+        raw = call_openai([{"role": "user", "content": prompt}])
+        try:
+            data = json.loads(raw)
+            if isinstance(data, list):
+                return data
+        except Exception:
+            pass
+
+        fallback = []
         if behavioral.get('life_rhythm', {}).get('typical_wake_time') == 'не определено':
-            insights.append({'type': 'warning', 'insight': 'Мало данных о режиме дня', 'details': '', 'recommendation': ''})
-        return insights
+            fallback.append({'type': 'warning', 'insight': 'Мало данных о режиме дня', 'details': '', 'recommendation': ''})
+        return fallback
 
     def _create_executive_summary(self, stats: Dict[str, Any], behavioral: Dict[str, Any], ads: Dict[str, Any]) -> str:
         return (
@@ -189,4 +259,19 @@ class AdvancedSimulationAnalyzer:
         )
 
     def _create_actionable_recommendations(self, behavioral: Dict[str, Any], ads: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Generate short action plan for marketing team using LLM."""
+
+        prompt = (
+            "Составь список конкретных действий маркетологов для такого клиента. "
+            f"Тип жизни: {behavioral.get('lifestyle_type')}. "
+            "Ответь JSON списком объектов с полями action, priority, timeline, expected_roi."
+        )
+
+        raw = call_openai([{"role": "user", "content": prompt}])
+        try:
+            data = json.loads(raw)
+            if isinstance(data, list):
+                return data
+        except Exception:
+            pass
         return []
