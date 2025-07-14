@@ -130,31 +130,46 @@ FORM_HTML = """
         </div>
         <div class="form-row">
             <label>Образование:</label>
-            <input type="text" name="education">
+            <select name="education">
+                <option value="">—</option>
+                <option value="среднее">среднее</option>
+                <option value="среднее специальное">среднее специальное</option>
+                <option value="неполное высшее">неполное высшее</option>
+                <option value="высшее">высшее</option>
+            </select>
         </div>
         <div class="form-row">
-            <label>Занятость:</label>
-            <input type="text" name="employment">
+            <label>Занятость (профессия):</label>
+            <input type="text" name="employment" placeholder="можно оставить пустым">
         </div>
         <div class="form-row">
             <label>Религия:</label>
-            <input type="text" name="religion">
+            <select name="religion">
+                <option value="">—</option>
+                <option value="православие">православие</option>
+                <option value="ислам">ислам</option>
+                <option value="атеизм">атеизм</option>
+                <option value="другое">другое</option>
+            </select>
         </div>
         <div class="form-row">
             <label>Идеология:</label>
-            <input type="text" name="ideology">
+            <select name="ideology">
+                <option value="">—</option>
+                <option value="левые">левые</option>
+                <option value="правые">правые</option>
+                <option value="либералы">либералы</option>
+                <option value="консерваторы">консерваторы</option>
+            </select>
         </div>
         <div class="form-row">
             <label>Цифровая грамотность:</label>
-            <input type="text" name="digital_literacy">
-        </div>
-        <div class="form-row">
-            <label>Доверие государству:</label>
-            <input type="text" name="state_trust">
-        </div>
-        <div class="form-row">
-            <label>Доверие СМИ:</label>
-            <input type="text" name="media_trust">
+            <select name="digital_literacy">
+                <option value="">—</option>
+                <option value="низкая">низкая</option>
+                <option value="средняя">средняя</option>
+                <option value="высокая">высокая</option>
+            </select>
         </div>
         <div class="form-row">
             <label>Контекст:</label>
@@ -170,10 +185,10 @@ FORM_HTML = """
         </div>
         <div class="form-row">
             <label>Триггерные точки:</label>
-            <input type="text" name="trigger_points" placeholder="список через запятую">
+            <input type="text" name="trigger_points" placeholder="можно оставить пустым, список через запятую">
         </div>
         <div class="form-row">
-            <label>Искажения восприятия:</label>
+            <label>Когнитивные искажения:</label>
             <textarea name="interpretation_biases" placeholder="можно оставить пустым"></textarea>
         </div>
         <div class="form-row">
@@ -185,7 +200,7 @@ FORM_HTML = """
             <textarea name="speech_profile" placeholder="можно оставить пустым"></textarea>
         </div>
         <div class="form-row">
-            <label>История (JSON):</label>
+            <label>Дополнительные факты (JSON):</label>
             <textarea name="full_history" placeholder="можно оставить пустым"></textarea>
         </div>
         <div class="form-row">
@@ -390,8 +405,6 @@ def simulate_route():
         religion=request.form.get("religion"),
         ideology=request.form.get("ideology"),
         digital_literacy=request.form.get("digital_literacy"),
-        state_trust=request.form.get("state_trust"),
-        media_trust=request.form.get("media_trust"),
         context=request.form.get("context"),
         cognitive_frame=try_parse_json(request.form.get("cognitive_frame")),
         rhetorical_manner=try_parse_json(request.form.get("rhetorical_manner")),
@@ -443,8 +456,6 @@ def simulate_stream_route():
         religion=request.args.get("religion"),
         ideology=request.args.get("ideology"),
         digital_literacy=request.args.get("digital_literacy"),
-        state_trust=request.args.get("state_trust"),
-        media_trust=request.args.get("media_trust"),
         context=request.args.get("context"),
         cognitive_frame=try_parse_json(request.args.get("cognitive_frame")),
         rhetorical_manner=try_parse_json(request.args.get("rhetorical_manner")),
@@ -554,8 +565,6 @@ async def run_console_simulation(args):
         religion=args.religion,
         ideology=args.ideology,
         digital_literacy=args.digital_literacy,
-        state_trust=args.state_trust,
-        media_trust=args.media_trust,
         context=args.context,
         cognitive_frame=try_parse_json(args.cognitive_frame),
         rhetorical_manner=try_parse_json(args.rhetorical_manner),
@@ -717,15 +726,11 @@ def main():
     parser.add_argument('--traits', default='',
                        help='Черты характера через запятую')
     parser.add_argument('--education', help='Образование')
-    parser.add_argument('--employment', help='Занятость')
+    parser.add_argument('--employment', help='Профессия')
     parser.add_argument('--religion', help='Религия')
     parser.add_argument('--ideology', help='Идеологические взгляды')
     parser.add_argument('--digital-literacy', dest='digital_literacy',
                        help='Цифровая грамотность')
-    parser.add_argument('--state-trust', dest='state_trust',
-                       help='Доверие государству')
-    parser.add_argument('--media-trust', dest='media_trust',
-                       help='Доверие СМИ')
     parser.add_argument('--context', help='Бытовой контекст')
     parser.add_argument('--cognitive-frame', dest='cognitive_frame',
                        help='Когнитивная рамка (JSON)')
@@ -734,13 +739,13 @@ def main():
     parser.add_argument('--trigger-points', dest='trigger_points',
                        help='Триггерные точки (JSON или список через запятую)')
     parser.add_argument('--interpretation-biases', dest='interpretation_biases',
-                       help='Искажения восприятия (JSON)')
+                       help='Когнитивные искажения (JSON)')
     parser.add_argument('--meta-self-view', dest='meta_self_view',
                        help='Взгляд на себя (JSON)')
     parser.add_argument('--speech-profile', dest='speech_profile',
                        help='Речевой профиль (JSON)')
     parser.add_argument('--full-history', dest='full_history',
-                       help='История персонажа (JSON список событий)')
+                       help='Дополнительные факты (JSON список событий)')
     
     # Параметры симуляции
     parser.add_argument('--days', type=int, default=3,
