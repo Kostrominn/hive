@@ -117,6 +117,9 @@ class ChatSimulatorUtils:
         self.pistol_config = PistolConfig()
         self.pistol_system = PistolSystem(self.pistol_config)
 
+        # Сводка предыдущих сообщений для передачи в промпт
+        self.dialogue_summary = []
+
 
     def _extract_note_type(self, person) -> Optional[str]:
         notes = self.side_notes.get(person.name, [])
@@ -125,6 +128,13 @@ class ChatSimulatorUtils:
         if any("хочу высказаться" in note.lower() or "нужно сказать" in note.lower() for note in notes):
             return "desire"
         return None
+
+    def _update_dialogue_summary(self, speaker: str, text: str, limit: int = 12) -> None:
+        """Добавляет сжатую версию реплики в общий список"""
+        snippet = " ".join(text.split()[:limit])
+        self.dialogue_summary.append(f"{speaker}: {snippet}")
+        if len(self.dialogue_summary) > 50:
+            self.dialogue_summary = self.dialogue_summary[-50:]
     
     def vote_history_context(self):
         block_context = ""
@@ -189,6 +199,10 @@ class ChatSimulatorUtils:
             context += f"📦 Нужды города: {res_list}\n"
 
         context += self.pistol_system.get_status_for_prompt()
+
+        if self.dialogue_summary:
+            context += "\n\n📝 Краткое содержание:\n"
+            context += "\n".join(self.dialogue_summary[-20:])
 
         if history:
             context += "🔨️ Последние реплики. Используй для реакции. Строй СВОЮ точку зрения на ситуацию.\n"
@@ -292,13 +306,16 @@ class ChatSimulatorUtils:
             conflict_notice = ""
 
 
-        history_snippet = "\n".join(f"{t['speaker']}: {t['text']}" for t in self.dialogue[-10:])
+        HISTORY_SLICE = 30
+        history_snippet = "\n".join(
+            f"{t['speaker']}: {t['text']}" for t in self.dialogue[-HISTORY_SLICE:]
+        )
         own_tail = [t["text"] for t in self.dialogue if t["speaker"] == person.name]
         own_lines = "\n".join(f"• {txt}" for txt in own_tail[-3:])
 
         #prompt = build_president_full_prompt(person, context, history_snippet, conflict_notice, self.topic, own_lines)
         
-        recent_messages = [t["text"] for t in self.dialogue[-30:]]
+        recent_messages = [t["text"] for t in self.dialogue[-HISTORY_SLICE:]]
         # Вместо старого вызова build_president_full_prompt используйте:
         if self.current_scenario:
             # Сначала получаем reactions_block и new_point_line через build_president_full_prompt_with_history
@@ -372,6 +389,7 @@ class ChatSimulatorUtils:
         # сохраняем нормальную реплику 
         tag = "🔥 (конфликт)" if self.conflict.is_in_active_conflict(person.name) else ""
         self.dialogue.append({"speaker": person.name, "text": f"{tag} {reply_text}".strip()})
+        self._update_dialogue_summary(person.name, reply_text)
         logging.info(f"💬 [{person.name}] reply: {reply_text}")
         logging.info(f"💵 💵 💵[{person.name}] give money to: {allocation}")
 
