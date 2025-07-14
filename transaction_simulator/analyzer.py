@@ -9,6 +9,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Person
 from .transaction_models import DailyResult, SimulationConfig
+from .advanced_analyzer import AdvancedSimulationAnalyzer as AdvancedAnalyzer
 
 
 class CategoryNormalizer:
@@ -74,23 +75,29 @@ class ImprovedSimulationAnalyzer:
     
     def __init__(self):
         self.normalizer = CategoryNormalizer()
+        # advanced analyzer for extended reports
+        self.advanced_analyzer = AdvancedAnalyzer()
     
     def analyze_simulation(
-        self, 
+        self,
         daily_results: List[DailyResult],
         person: Person,
         config: SimulationConfig
     ) -> Dict[str, Any]:
         """Полный анализ симуляции"""
-        
+        # Используем продвинутый анализатор для получения полной картины
+        report = self.advanced_analyzer.generate_comprehensive_report(
+            daily_results, person, config
+        )
+
         return {
-            "spending_analysis": self._analyze_spending(daily_results),
-            "social_analysis": self._analyze_social(daily_results),
-            "emotional_analysis": self._analyze_emotions(daily_results),
-            "behavioral_patterns": self._analyze_behavioral_patterns(daily_results),
-            "daily_trends": self._analyze_daily_trends(daily_results),
-            "event_impact": self._analyze_event_impact(daily_results, config),
-            "insights": self._generate_insights(daily_results, person)
+            "spending_analysis": self._extract_spending_analysis(report),
+            "social_analysis": self._extract_social_analysis(report),
+            "emotional_analysis": self._extract_emotional_analysis(report, daily_results),
+            "behavioral_patterns": report.get("behavioral_analysis", {}),
+            "daily_trends": self._extract_daily_trends(daily_results),
+            "event_impact": {},
+            "insights": self._extract_insights(report),
         }
     
     def _analyze_spending(self, results: List[DailyResult]) -> Dict[str, Any]:
@@ -576,3 +583,94 @@ class ImprovedSimulationAnalyzer:
             "key_insights": key_insights,
             "summary": f"За {len(results)} дней потрачено {total_spent:.0f} RUB (в среднем {total_spent/len(results):.0f} RUB/день). Состоялось {total_interactions} социальных взаимодействий с {len(unique_contacts)} людьми. Эмоциональное состояние: {emotions['overall_mood']}."
         }
+    # ----- Методы извлечения данных из продвинутого отчета -----
+    def _extract_spending_analysis(self, report: Dict[str, Any]) -> Dict[str, Any]:
+        stats = report.get('basic_statistics', {})
+        spending = report.get('spending_deep_dive', {})
+        categories = spending.get('category_deep_dive', {})
+        by_category = {c: d.get('total', 0) for c, d in categories.items()}
+        return {
+            "total_spent": stats.get('total_spent', 0),
+            "daily_average": stats.get('average_daily_spent', 0),
+            "daily_min": stats.get('spending_range', {}).get('min', 0),
+            "daily_max": stats.get('spending_range', {}).get('max', 0),
+            "transactions_count": stats.get('total_transactions', 0),
+            "by_category": by_category,
+            "category_counts": {c: d.get('frequency', 0) for c, d in categories.items()},
+            "category_distribution": spending.get('price_sensitivity_index', 0),
+            "by_place": {},
+            "unique_places": len(spending.get('place_intelligence', {}).get('place_profiles', {})),
+            "by_time": spending.get('spending_velocity', {}).get('spending_by_period', {}),
+            "impulse_purchases": spending.get('purchase_frequency', {}).get('impulse_rate', 0),
+            "spending_volatility": 0,
+            "spending_trend": self._determine_trend(categories),
+        }
+
+    def _extract_social_analysis(self, report: Dict[str, Any]) -> Dict[str, Any]:
+        stats = report.get('basic_statistics', {})
+        social = report.get('social_dynamics', {})
+        network = social.get('social_network', {})
+        contact_frequency = {p: d.get('interactions', 0) for p, d in network.items()}
+        top_contacts = sorted(contact_frequency.items(), key=lambda x: x[1], reverse=True)[:10]
+        return {
+            'total_interactions': stats.get('total_social_interactions', 0),
+            'daily_average': stats.get('total_social_interactions', 0) / stats.get('days_analyzed', 1) if stats.get('days_analyzed') else 0,
+            'unique_contacts': len(network),
+            'top_contacts': dict(top_contacts),
+            'interaction_frequency': contact_frequency,
+            'most_frequent_contact': top_contacts[0][0] if top_contacts else None,
+            'social_diversity': len(network) / stats.get('total_social_interactions', 1) if stats.get('total_social_interactions') else 0,
+        }
+
+    def _extract_emotional_analysis(self, report: Dict[str, Any], results: List[DailyResult]) -> Dict[str, Any]:
+        mood_trajectories = [day.day_summary.mood_trajectory for day in results]
+        pos_words = ['радость', 'счастье', 'воодушевление', 'спокойствие', 'удовлетворение', 'приятно']
+        neg_words = ['усталость', 'тревога', 'стресс', 'раздражение', 'грусть', 'конфликт']
+        pos = sum(1 for tr in mood_trajectories if any(w in tr.lower() for w in pos_words))
+        neg = sum(1 for tr in mood_trajectories if any(w in tr.lower() for w in neg_words))
+        return {
+            'mood_trajectories': mood_trajectories,
+            'positive_days': pos,
+            'negative_days': neg,
+            'neutral_days': len(mood_trajectories) - pos - neg,
+            'positivity_ratio': pos / len(mood_trajectories) if mood_trajectories else 0,
+            'overall_mood': self._determine_overall_mood_from_counts(pos, neg, len(mood_trajectories)),
+        }
+
+    def _extract_daily_trends(self, results: List[DailyResult]) -> Dict[str, Any]:
+        daily_data = []
+        for day in results:
+            daily_data.append({
+                'date': day.date,
+                'total_spent': sum(t.amount for t in day.transactions),
+                'transaction_count': len(day.transactions),
+                'social_interactions': len(day.social_interactions),
+                'mood_positive': any(word in day.day_summary.mood_trajectory.lower() for word in ['радость', 'счастье', 'воодушевление']),
+            })
+        return {
+            'daily_data': daily_data,
+            'spending_progression': [d['total_spent'] for d in daily_data],
+            'social_progression': [d['social_interactions'] for d in daily_data],
+            'peak_spending_day': max(daily_data, key=lambda x: x['total_spent']) if daily_data else None,
+            'peak_social_day': max(daily_data, key=lambda x: x['social_interactions']) if daily_data else None,
+        }
+
+    def _extract_insights(self, report: Dict[str, Any]) -> List[str]:
+        insights = []
+        for ins in report.get('key_insights', [])[:5]:
+            insights.append(f"{ins['insight']}: {ins.get('details', '')}")
+        for opp in report.get('advertising_opportunities', {}).get('immediate_opportunities', [])[:2]:
+            insights.append(f"Возможность: {opp.get('product', '')} - {opp.get('reasoning', '')}")
+        return insights
+
+    def _determine_trend(self, categories: Dict[str, Any]) -> str:
+        trends = [d.get('trend') for d in categories.values() if isinstance(d, dict) and 'trend' in d]
+        if not trends:
+            return 'недостаточно данных'
+        growing = sum(1 for t in trends if t == 'растущий')
+        declining = sum(1 for t in trends if t == 'снижающийся')
+        if growing > declining:
+            return 'растущий'
+        if declining > growing:
+            return 'снижающийся'
+        return 'стабильный'
