@@ -139,8 +139,31 @@ FORM_HTML = """
             </select>
         </div>
         <div class="form-row">
-            <label>Занятость (профессия):</label>
-            <input type="text" name="employment" placeholder="можно оставить пустым">
+            <label>Регион:</label>
+            <input type="text" name="region" value="Москва" required>
+        </div>
+        <div class="form-row">
+            <label>Тип города:</label>
+            <select name="city_type">
+                <option value="село">село</option>
+                <option value="малый город">малый город</option>
+                <option value="средний город">средний город</option>
+                <option value="крупный город">крупный город</option>
+                <option value="мегаполис" selected>мегаполис</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>Семейное положение:</label>
+            <select name="family_status">
+                <option value="не женат" selected>не женат</option>
+                <option value="женат/замужем">женат/замужем</option>
+                <option value="разведен">разведен</option>
+                <option value="вдовец/вдова">вдовец/вдова</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>Детей:</label>
+            <input type="number" name="children" value="0" min="0" max="10">
         </div>
         <div class="form-row">
             <label>Религия:</label>
@@ -396,12 +419,12 @@ def simulate_route():
         gender=request.form.get("gender", "мужчина"),
         profession=request.form.get("profession", "менеджер"),
         income_level=request.form.get("income", "средний"),
-        family_status="не женат",
-        children=0,
-        region="Москва",
-        city_type="мегаполис",
+        family_status=request.form.get("family_status", "не женат"),
+        children=int(request.form.get("children", 0)),
+        region=request.form.get("region", "Москва"),
+        city_type=request.form.get("city_type", "мегаполис"),
         education=request.form.get("education"),
-        employment=request.form.get("employment"),
+        employment=None,
         religion=request.form.get("religion"),
         ideology=request.form.get("ideology"),
         digital_literacy=request.form.get("digital_literacy"),
@@ -447,12 +470,12 @@ def simulate_stream_route():
         gender=request.args.get("gender", "мужчина"),
         profession=request.args.get("profession", "менеджер"),
         income_level=request.args.get("income", "средний"),
-        family_status="не женат",
-        children=0,
-        region="Москва",
-        city_type="мегаполис",
+        family_status=request.args.get("family_status", "не женат"),
+        children=int(request.args.get("children", 0)),
+        region=request.args.get("region", "Москва"),
+        city_type=request.args.get("city_type", "мегаполис"),
         education=request.args.get("education"),
-        employment=request.args.get("employment"),
+        employment=None,
         religion=request.args.get("religion"),
         ideology=request.args.get("ideology"),
         digital_literacy=request.args.get("digital_literacy"),
