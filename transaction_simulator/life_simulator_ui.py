@@ -132,6 +132,10 @@ FORM_HTML = """
             <input type="number" name="days" value="3" min="1" max="30" required>
         </div>
         <div class="form-row">
+            <label>Дата начала:</label>
+            <input type="date" name="start_date">
+        </div>
+        <div class="form-row">
             <input type="submit" value="🚀 Запустить симуляцию">
         </div>
     </form>
@@ -322,7 +326,11 @@ def simulate_route():
         city_type="мегаполис",
     )
     days = int(request.form.get("days", 3))
-    start_date = datetime.now() - timedelta(days=days - 1)
+    sd = request.form.get("start_date")
+    if sd:
+        start_date = datetime.strptime(sd, "%Y-%m-%d")
+    else:
+        start_date = datetime.now() - timedelta(days=days - 1)
     config = SimulationConfig(
         target_person_id=person.id,
         start_date=start_date,
@@ -353,7 +361,11 @@ def simulate_stream_route():
     )
     
     days = int(request.args.get("days", 3))
-    start_date = datetime.now() - timedelta(days=days - 1)
+    sd = request.args.get("start_date")
+    if sd:
+        start_date = datetime.strptime(sd, "%Y-%m-%d")
+    else:
+        start_date = datetime.now() - timedelta(days=days - 1)
     config = SimulationConfig(
         target_person_id=person.id,
         start_date=start_date,
@@ -447,7 +459,10 @@ async def run_console_simulation(args):
     print(f"\n⏳ Симулируем {args.days} дней...\n")
     
     # Создаем конфигурацию
-    start_date = datetime.now() - timedelta(days=args.days-1)
+    if args.start_date:
+        start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
+    else:
+        start_date = datetime.now() - timedelta(days=args.days-1)
     config = SimulationConfig(
         target_person_id=person.id,
         start_date=start_date,
@@ -587,6 +602,8 @@ def main():
     # Параметры симуляции
     parser.add_argument('--days', type=int, default=3,
                        help='Количество дней для симуляции (1-30)')
+    parser.add_argument('--start-date',
+                       help='Дата начала симуляции YYYY-MM-DD')
     parser.add_argument('--show-chats', action='store_true',
                        help='Показывать диалоги')
     parser.add_argument('--report', action='store_true',
