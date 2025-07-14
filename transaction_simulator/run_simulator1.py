@@ -51,7 +51,10 @@ async def run_console_simulation(args):
     print(f"\n⏳ Симулируем {args.days} дней...\n")
     
     # Создаем конфигурацию
-    start_date = datetime.now() - timedelta(days=args.days-1)
+    if args.start_date:
+        start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
+    else:
+        start_date = datetime.now() - timedelta(days=args.days-1)
     config = SimulationConfig(
         target_person_id=person.id,
         start_date=start_date,
@@ -191,6 +194,8 @@ def main():
     # Параметры симуляции
     parser.add_argument('--days', type=int, default=3,
                        help='Количество дней для симуляции (1-30)')
+    parser.add_argument('--start-date',
+                       help='Дата начала симуляции YYYY-MM-DD')
     parser.add_argument('--show-chats', action='store_true',
                        help='Показывать диалоги')
     parser.add_argument('--report', action='store_true',
