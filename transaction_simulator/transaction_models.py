@@ -80,6 +80,17 @@ class MemoryContext(BaseModel):
     )
 
 
+class Event(BaseModel):
+    """Запланированное событие"""
+
+    day: int = Field(description="День симуляции (0-индекс)")
+    type: str = Field(description="Тип события")
+    description: Optional[str] = Field(
+        default=None,
+        description="Дополнительное описание события"
+    )
+
+
 class SimulationConfig(BaseModel):
     """Конфигурация симуляции"""
     target_person_id: str
@@ -91,7 +102,7 @@ class SimulationConfig(BaseModel):
         description="Множитель дневного бюджета"
     )
     include_weekends: bool = Field(default=True)
-    events: Optional[List[Dict[str, Any]]] = Field(
+    events: Optional[List[Event]] = Field(
         default=None,
         description="Запланированные события"
     )

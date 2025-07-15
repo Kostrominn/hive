@@ -9,10 +9,11 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Person, Runner
-from .transaction_models import DailyResult, DayContext, DailySummary
+from .transaction_models import DailyResult, DayContext, DailySummary, Event
 from .social_manager import SocialInteractionManager, SocialEnvironment
 from .transaction_generator import TransactionGenerator
 from .agents import emotion_analyzer_agent
+from .prompts import format_event_context
 
 
 class DailyLifeSimulator:
@@ -29,11 +30,11 @@ class DailyLifeSimulator:
         self.transaction_generator = TransactionGenerator(person)
         
     async def simulate_day(
-    self,
-    date: datetime,
-    memory_context: Dict[str, Any],
-    special_event: Optional[str] = None
-) -> DailyResult:
+        self,
+        date: datetime,
+        memory_context: Dict[str, Any],
+        special_event: Optional[Event] = None
+    ) -> DailyResult:
         """Полная симуляция одного дня"""
         
         # 1. Определяем контекст дня
@@ -83,9 +84,9 @@ class DailyLifeSimulator:
         )
     
     def _build_day_context(
-        self, 
-        date: datetime, 
-        special_event: Optional[str]
+        self,
+        date: datetime,
+        special_event: Optional[Event]
     ) -> DayContext:
         """Строит контекст дня"""
         
@@ -97,7 +98,10 @@ class DailyLifeSimulator:
         
         events = []
         if special_event:
-            events.append(special_event)
+            events.append(
+                format_event_context(special_event.type, special_event.dict())
+                or special_event.type
+            )
         
         # Определяем стандартные события
         if date.day == 25:  # примерно зарплата
