@@ -10,7 +10,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Person
-from .transaction_models import SimulationConfig, MemoryContext, DailyResult
+from .transaction_models import SimulationConfig, MemoryContext, DailyResult, Event
 from .social_manager import SocialEnvironment
 from .daily_simulator import DailyLifeSimulator
 from .advanced_analyzer import AdvancedSimulationAnalyzer
@@ -125,10 +125,10 @@ class LifeTransactionSimulator:
                 logger.info(f"Special event: {special_event}")
                 
                 # Возможно добавляем нового человека
-                if special_event in ["повышение", "новая работа"]:
+                if special_event.type in ["повышение", "новая работа"]:
                     new_person = await self.social_environment.add_new_person(
-                        context=f"В связи с {special_event}",
-                        event_type=special_event
+                        context=f"В связи с {special_event.type}",
+                        event_type=special_event.type
                     )
                     logger.info(f"New person added: {new_person['name']}")
             
@@ -176,16 +176,16 @@ class LifeTransactionSimulator:
             "analysis": analysis  # Теперь содержит улучшенную аналитику
         }
     
-    def _check_for_event(self, day_num: int) -> Optional[str]:
+    def _check_for_event(self, day_num: int) -> Optional[Event]:
         """Проверяет, есть ли событие в этот день"""
-        
+
         if not self.config.events:
             return None
-        
+
         for event in self.config.events:
-            if event.get('day') == day_num:
-                return event.get('type')
-        
+            if event.day == day_num:
+                return event
+
         return None
     
     def _update_memory(self, daily_result: DailyResult):
@@ -200,6 +200,7 @@ class LifeTransactionSimulator:
                 if daily_result.social_interactions else "один"
             ),
             "mood": daily_result.day_summary.mood_trajectory,
+            "events": daily_result.day_context.events,
             "transactions": [
                 {
                     "category": t.category,

@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Person
-from .transaction_models import DailyResult, SimulationConfig
+from .transaction_models import DailyResult, SimulationConfig, Event
 
 
 
@@ -436,8 +436,12 @@ class ImprovedSimulationAnalyzer:
         event_impacts = {}
         
         for event in config.events:
-            event_day = event.get('day', 0)
-            event_type = event.get('type', 'unknown')
+            if isinstance(event, dict):
+                event_day = event.get('day', 0)
+                event_type = event.get('type', 'unknown')
+            else:
+                event_day = event.day
+                event_type = event.type
             
             if event_day >= len(results):
                 continue
