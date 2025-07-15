@@ -235,12 +235,73 @@ FORM_HTML = """
             <input type="date" name="start_date">
         </div>
         <div class="form-row">
+            <label style="width: 100%; font-weight: bold;">События по дням (опционально):</label>
+            <div id="events-container" style="border: 1px solid #ddd; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                <div class="event-row" style="margin-bottom: 10px;">
+                    <label style="width: 80px;">День:</label>
+                    <input type="number" name="event_day_1" min="1" max="30" style="width: 60px;" placeholder="1">
+                    
+                    <label style="width: 80px; margin-left: 10px;">Тип:</label>
+                    <select name="event_type_1" style="width: 120px;">
+                        <option value="">Выберите тип</option>
+                        <option value="salary">Зарплата</option>
+                        <option value="promotion">Повышение</option>
+                        <option value="birthday">День рождения</option>
+                        <option value="holiday">Праздник</option>
+                        <option value="personal">Личное событие</option>
+                    </select>
+                    
+                    <label style="width: 80px; margin-left: 10px;">Описание:</label>
+                    <input type="text" name="event_description_1" style="width: 200px;" placeholder="Дополнительные детали">
+                </div>
+                
+                <div class="event-row" style="margin-bottom: 10px;">
+                    <label style="width: 80px;">День:</label>
+                    <input type="number" name="event_day_2" min="1" max="30" style="width: 60px;" placeholder="2">
+                    
+                    <label style="width: 80px; margin-left: 10px;">Тип:</label>
+                    <select name="event_type_2" style="width: 120px;">
+                        <option value="">Выберите тип</option>
+                        <option value="salary">Зарплата</option>
+                        <option value="promotion">Повышение</option>
+                        <option value="birthday">День рождения</option>
+                        <option value="holiday">Праздник</option>
+                        <option value="personal">Личное событие</option>
+                    </select>
+                    
+                    <label style="width: 80px; margin-left: 10px;">Описание:</label>
+                    <input type="text" name="event_description_2" style="width: 200px;" placeholder="Дополнительные детали">
+                </div>
+                
+                <div class="event-row" style="margin-bottom: 10px;">
+                    <label style="width: 80px;">День:</label>
+                    <input type="number" name="event_day_3" min="1" max="30" style="width: 60px;" placeholder="3">
+                    
+                    <label style="width: 80px; margin-left: 10px;">Тип:</label>
+                    <select name="event_type_3" style="width: 120px;">
+                        <option value="">Выберите тип</option>
+                        <option value="salary">Зарплата</option>
+                        <option value="promotion">Повышение</option>
+                        <option value="birthday">День рождения</option>
+                        <option value="holiday">Праздник</option>
+                        <option value="personal">Личное событие</option>
+                    </select>
+                    
+                    <label style="width: 80px; margin-left: 10px;">Описание:</label>
+                    <input type="text" name="event_description_3" style="width: 200px;" placeholder="Дополнительные детали">
+                </div>
+                
+                <button type="button" onclick="addEventRow()" style="margin-top: 10px; padding: 5px 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">+ Добавить событие</button>
+            </div>
+        </div>
+        <div class="form-row">
             <input type="submit" value="🚀 Запустить симуляцию">
         </div>
     </form>
     <pre id="output"></pre>
 
 <script>
+console.log("🔥 JS загружен");
 (function() {
     'use strict';
     
@@ -255,6 +316,45 @@ FORM_HTML = """
             console.error('Form not found!');
             return;
         }
+        
+        // Функции для управления событиями
+        let eventRowCount = 3;
+
+        window.addEventRow = function() {
+            eventRowCount++;
+            const container = document.getElementById('events-container');
+            const addButton = container.querySelector('button');
+            
+            const newRow = document.createElement('div');
+            newRow.className = 'event-row';
+            newRow.style.marginBottom = '10px';
+            
+            newRow.innerHTML = `
+                <label style="width: 80px;">День:</label>
+                <input type="number" name="event_day_${eventRowCount}" min="1" max="30" style="width: 60px;" placeholder="${eventRowCount}">
+                
+                <label style="width: 80px; margin-left: 10px;">Тип:</label>
+                <select name="event_type_${eventRowCount}" style="width: 120px;">
+                    <option value="">Выберите тип</option>
+                    <option value="salary">Зарплата</option>
+                    <option value="promotion">Повышение</option>
+                    <option value="birthday">День рождения</option>
+                    <option value="holiday">Праздник</option>
+                    <option value="personal">Личное событие</option>
+                </select>
+                
+                <label style="width: 80px; margin-left: 10px;">Описание:</label>
+                <input type="text" name="event_description_${eventRowCount}" style="width: 200px;" placeholder="Дополнительные детали">
+                
+                <button type="button" onclick="removeEventRow(this)" style="margin-left: 10px; padding: 2px 6px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">×</button>
+            `;
+            
+            container.insertBefore(newRow, addButton);
+        };
+
+        window.removeEventRow = function(button) {
+            button.parentElement.remove();
+        };
         
         form.addEventListener('submit', function(e) {
             console.log('Form submitted');
@@ -356,16 +456,153 @@ FORM_HTML = """
                         }
                         
                     } else if (msg.event === 'complete') {
-                        output.textContent += '\\n\\n✅ Симуляция завершена!\\n';
-                        
-                        // Краткая аналитика
-                        if (msg.data.analysis && msg.data.analysis.insights) {
-                            output.textContent += '\\n📊 Ключевые выводы:\\n';
-                            msg.data.analysis.insights.forEach(function(insight) {
-                                output.textContent += '  • ' + insight + '\\n';
+                        const a = msg.data.analysis;
+
+                        // 📊 Ключевые выводы
+                        if (Array.isArray(a.key_insights) && a.key_insights.length > 0) {
+                            const heading = document.createElement("div");
+                            heading.textContent = "📊 Ключевые выводы:";
+                            output.appendChild(heading);
+
+                            a.key_insights.forEach(function(insightObj) {
+                                const insightBlock = document.createElement("div");
+                                insightBlock.style.marginBottom = "12px";
+                                insightBlock.style.padding = "8px";
+                                insightBlock.style.borderLeft = "4px solid #007bff";
+                                insightBlock.style.background = "#f0f4ff";
+
+                                const title = document.createElement("strong");
+                                title.textContent = "• " + insightObj.insight;
+                                insightBlock.appendChild(title);
+
+                                if (insightObj.details) {
+                                    const details = document.createElement("div");
+                                    details.textContent = "📌 " + insightObj.details;
+                                    insightBlock.appendChild(details);
+                                }
+
+                                if (insightObj.recommendation) {
+                                    const rec = document.createElement("div");
+                                    rec.textContent = "💡 " + insightObj.recommendation;
+                                    insightBlock.appendChild(rec);
+                                }
+
+                                output.appendChild(insightBlock);
                             });
                         }
-                        
+
+                        // 📈 Подробные расходы по категориям
+                        const spending = a.spending_deep_dive?.category_deep_dive;
+                        if (spending && Object.keys(spending).length > 0) {
+                            const section = document.createElement("div");
+                            section.innerHTML = "<h3>🍴 Подробные расходы по категориям:</h3>";
+
+                            for (const [category, info] of Object.entries(spending)) {
+                                const block = document.createElement("div");
+                                block.style.marginBottom = "12px";
+                                const total = Math.round(info.total);
+                                const avg = Math.round(info.average);
+                                const freq = info.frequency;
+
+                                block.innerHTML += `<strong>${category}</strong><br>`;
+                                block.innerHTML += `• всего: ${total} ₽<br>`;
+                                block.innerHTML += `• среднее за покупку: ${avg} ₽ (${freq} покупок)<br>`;
+
+                                if (info.top_items && info.top_items.length > 0) {
+                                    const topList = document.createElement("ul");
+                                    info.top_items.forEach(([name, _count]) => {
+                                        const li = document.createElement("li");
+                                        li.textContent = name;
+                                        topList.appendChild(li);
+                                    });
+                                    block.appendChild(topList);
+                                }
+
+                                section.appendChild(block);
+                            }
+
+                            output.appendChild(section);
+                        }
+
+                        // 👥 Социальная сеть
+                        const network = a.social_dynamics?.social_network;
+                        if (network && Object.keys(network).length > 0) {
+                            const netHeading = document.createElement("h3");
+                            netHeading.textContent = "👥 Социальная активность:";
+                            output.appendChild(netHeading);
+
+                            const list = document.createElement("ul");
+                            for (const [name, val] of Object.entries(network)) {
+                                const li = document.createElement("li");
+                                li.textContent = `${name} — ${val.interactions} взаимодействий`;
+                                list.appendChild(li);
+                            }
+                            output.appendChild(list);
+                        }
+
+                        // 🔮 Прогнозы
+                        const pred = a.predictions;
+                        if (pred) {
+                            const predBlock = document.createElement("div");
+                            predBlock.innerHTML = "<h3>🔮 Прогнозы:</h3>";
+
+                            if (pred.next_month_spending)
+                                predBlock.innerHTML += `• Ожидаемые траты: ${Math.round(pred.next_month_spending)} ₽<br>`;
+                            if (pred.likely_major_purchases?.length)
+                                predBlock.innerHTML += `• Крупные покупки: ${pred.likely_major_purchases.join(', ')}<br>`;
+                            if (pred.lifestyle_changes)
+                                predBlock.innerHTML += `• Изменение образа жизни: ${pred.lifestyle_changes}<br>`;
+                            if (pred.churn_risk != null)
+                                predBlock.innerHTML += `• Риск оттока: ${Math.round(pred.churn_risk * 100)} %<br>`;
+                            if (pred.upsell_probability != null)
+                                predBlock.innerHTML += `• Вероятность апсейла: ${Math.round(pred.upsell_probability * 100)} %<br>`;
+
+                            output.appendChild(predBlock);
+                        }
+
+                        // 📣 Рекламные возможности
+                        const adv = a.advertising_opportunities;
+                        if (adv && adv.immediate_opportunities?.length > 0) {
+                            const advHeading = document.createElement("h3");
+                            advHeading.textContent = "📣 Немедленные рекламные возможности:";
+                            output.appendChild(advHeading);
+
+                            const list = document.createElement("ul");
+                            adv.immediate_opportunities.forEach(op => {
+                                const li = document.createElement("li");
+                                li.textContent = op;
+                                list.appendChild(li);
+                            });
+                            output.appendChild(list);
+                        }
+
+                        // 🧠 Поведенческий профиль
+                        const beh = a.behavioral_analysis;
+                        if (beh?.life_rhythm) {
+                            const b = document.createElement("div");
+                            b.innerHTML = "<h3>🧠 Поведенческий профиль:</h3>";
+                            b.innerHTML += `• Время подъема: ${beh.life_rhythm.typical_wake_time}<br>`;
+                            b.innerHTML += `• Завершение активности: ${beh.life_rhythm.typical_end_time}<br>`;
+                            b.innerHTML += `• Стабильность рутины: ${beh.life_rhythm.routine_stability}<br>`;
+                            if (beh.lifestyle_type)
+                                b.innerHTML += `• Тип образа жизни: ${beh.lifestyle_type}<br>`;
+                            output.appendChild(b);
+                        }
+
+                        // 🧾 Общая статистика
+                        const stats = a.basic_statistics;
+                        if (stats) {
+                            const s = document.createElement("div");
+                            s.innerHTML = "<h3>📋 Общая статистика:</h3>";
+                            s.innerHTML += `• Период: ${stats.period}<br>`;
+                            s.innerHTML += `• Дней проанализировано: ${stats.days_analyzed}<br>`;
+                            s.innerHTML += `• Потрачено всего: ${Math.round(stats.total_spent)} ₽<br>`;
+                            s.innerHTML += `• В среднем в день: ${Math.round(stats.average_daily_spent)} ₽<br>`;
+                            s.innerHTML += `• Транзакций: ${stats.total_transactions}<br>`;
+                            s.innerHTML += `• Соц. взаимодействий: ${stats.total_social_interactions}<br>`;
+                            output.appendChild(s);
+                        }
+                    
                         eventSource.close();
                         console.log('Simulation completed, closing connection');
                     }
@@ -441,6 +678,32 @@ def simulate_route():
         speech_profile=try_parse_json(request.form.get("speech_profile")),
         full_history=[HistoryEvent(**ev) for ev in try_parse_json(request.form.get("full_history")) or []] if request.form.get("full_history") else None,
     )
+    events = []
+    for i in range(1, 20):  # Поддерживаем до 20 событий
+        day_key = f"event_day_{i}"
+        type_key = f"event_type_{i}"
+        desc_key = f"event_description_{i}"
+        
+        day = request.form.get(day_key)
+        event_type = request.form.get(type_key)
+        
+        if day and event_type:
+            try:
+                day_num = int(day) - 1  # Преобразуем в 0-based индекс
+                event = {
+                    'day': day_num,
+                    'type': event_type
+                }
+                
+                # Добавляем описание если есть
+                description = request.form.get(desc_key, "").strip()
+                if description:
+                    event['description'] = description
+                
+                events.append(event)
+            except ValueError:
+                pass  # Игнорируем некорректные номера дней
+
     days = int(request.form.get("days", 3))
     sd = request.form.get("start_date")
     if sd:
@@ -452,6 +715,7 @@ def simulate_route():
         start_date=start_date,
         days=days,
         memory_window=5,
+        events=events if events else None
     )
 
     simulator = LifeTransactionSimulator(config, [person])
@@ -492,6 +756,32 @@ def simulate_stream_route():
         speech_profile=try_parse_json(request.args.get("speech_profile")),
         full_history=[HistoryEvent(**ev) for ev in try_parse_json(request.args.get("full_history")) or []] if request.args.get("full_history") else None,
     )
+
+    events = []
+    for i in range(1, 20):  # Поддерживаем до 20 событий
+        day_key = f"event_day_{i}"
+        type_key = f"event_type_{i}"
+        desc_key = f"event_description_{i}"
+        
+        day = request.args.get(day_key)
+        event_type = request.args.get(type_key)
+        
+        if day and event_type:
+            try:
+                day_num = int(day) - 1  # Преобразуем в 0-based индекс
+                event = {
+                    'day': day_num,
+                    'type': event_type
+                }
+                
+                # Добавляем описание если есть
+                description = request.args.get(desc_key, "").strip()
+                if description:
+                    event['description'] = description
+                
+                events.append(event)
+            except ValueError:
+                pass  # Игнорируем некорректные номера дней
     
     days = int(request.args.get("days", 3))
     sd = request.args.get("start_date")
@@ -504,6 +794,7 @@ def simulate_stream_route():
         start_date=start_date,
         days=days,
         memory_window=5,
+        events=events if events else None
     )
 
     simulator = LifeTransactionSimulator(config, [person])

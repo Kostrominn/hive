@@ -9,7 +9,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Person
 from .transaction_models import DailyResult, SimulationConfig
-from .advanced_analyzer import AdvancedSimulationAnalyzer as AdvancedAnalyzer
+
 
 
 class CategoryNormalizer:
@@ -74,6 +74,7 @@ class ImprovedSimulationAnalyzer:
     """Улучшенный анализатор симуляции с нормализацией категорий"""
     
     def __init__(self):
+        from .advanced_analyzer import AdvancedSimulationAnalyzer as AdvancedAnalyzer
         self.normalizer = CategoryNormalizer()
         # advanced analyzer for extended reports
         self.advanced_analyzer = AdvancedAnalyzer()

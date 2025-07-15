@@ -13,7 +13,7 @@ from models import Person
 from .transaction_models import SimulationConfig, MemoryContext, DailyResult
 from .social_manager import SocialEnvironment
 from .daily_simulator import DailyLifeSimulator
-from .analyzer import AdvancedSimulationAnalyzer
+from .advanced_analyzer import AdvancedSimulationAnalyzer
 from .report_generator import EnhancedReportGenerator
 
 
@@ -157,11 +157,13 @@ class LifeTransactionSimulator:
         
         # 3. Генерируем комплексную аналитику
         logger.info("\nGenerating comprehensive analysis...")
+        print("\nGenerating comprehensive analysis...")
         analysis = self.analyzer.generate_comprehensive_report(
             self.daily_results,
             self.person,
             self.config
         )
+        print(analysis)
         
         return {
             "person": self.person.dict(),
